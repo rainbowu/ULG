@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,14 +36,14 @@ public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
     //private static String WEATHER_QUERY_URL_ZIP = "http://api.openweathermap.org/data/2.5/weather?zip=30318&APPID=109d7d4557083d7fd1f40f9f5aaf861d";
-    private static String WEATHER_QUERY_URL_ZIP = "http://unitedlab-171401.appspot.com/api";
+    private static String WEATHER_QUERY_URL_ZIP = "https://backend-dot-unitedlab-171401.appspot.com/type/";
 
     public ArrayList<String> WeatherInfo = new ArrayList<String>();
     public String GetResult = "";
 
     Button Get, Post;
     TextView Get_view, tvIsConnected;
-    EditText etName,etCountry,etTwitter;
+    public EditText etName,etCountry,etTwitter;
     Person person;
 
 
@@ -97,7 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 if(!validate())
                     Toast.makeText(getBaseContext(), "Enter some data!", Toast.LENGTH_LONG).show();
                 // call AsynTask to perform network operation on separate thread
-                new HttpAsyncTask().execute("http://unitedlab-171401.appspot.com/api");
+               // new HttpAsyncTask().execute("http://hmkcode.appspot.com/jsonservlet");
+
+               new HttpAsyncTask().execute("https://backend-dot-unitedlab-171401.appspot.com/type/");
+
+
             }
         });
 
@@ -129,11 +134,12 @@ public class MainActivity extends AppCompatActivity {
 
             String json = "";
 
+
+
             // 3. build jsonObject
             JSONObject jsonObject = new JSONObject();
-            jsonObject.accumulate("message", person.getName());
-            //jsonObject.accumulate("country", person.getCountry());
-            //jsonObject.accumulate("twitter", person.getTwitter());
+            jsonObject.accumulate("name", "bad");
+            jsonObject.accumulate("data", "123123123123123");
 
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
@@ -236,17 +242,34 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... urls) {
 
-            person = new Person();
-            person.setName(etName.getText().toString());
-            person.setCountry(etCountry.getText().toString());
-            person.setTwitter(etTwitter.getText().toString());
+            // 3. build jsonObject
+            JSONObject js = new JSONObject();
+            try {
+                js.accumulate("name", "Good");
+                js.accumulate("data", "US");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            return POST(urls[0],person);
+//            HttpHandler sh = new HttpHandler();
+//
+//            // Making a request to url and getting response
+//
+//            String jsonStr = sh.makePOSTServiceCall(urls[0],js);
+//            GetResult = jsonStr;
+
+
+            //
+            String s = POST(urls[0],person);
+            Toast.makeText(getBaseContext(), s, Toast.LENGTH_LONG).show();
+
+            return s;
+
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -261,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
             // Making a request to url and getting response
 
             Log.e(TAG, "url: " + urls[0]);
-            String jsonStr = sh.makeServiceCall(urls[0]);
+            String jsonStr = sh.makeGETServiceCall(urls[0]);
             GetResult = jsonStr;
 
             Log.e(TAG, "Response from url: " + jsonStr);
