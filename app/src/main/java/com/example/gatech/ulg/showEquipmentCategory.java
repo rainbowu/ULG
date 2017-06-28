@@ -13,6 +13,7 @@ public class showEquipmentCategory extends AppCompatActivity {
 
     String[] listofCountries={"India","China","Nepal","Bhutan"};
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +26,10 @@ public class showEquipmentCategory extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.Listview_catetory);
         listView.setAdapter(itemsAdapter);
 
+
+
+
+        // Button
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
