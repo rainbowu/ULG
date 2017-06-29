@@ -1,5 +1,7 @@
 package com.example.gatech.ulg;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +23,7 @@ public class filterEquipmentActivity extends AppCompatActivity {
 
     private String TAG = filterEquipmentActivity.class.getSimpleName();
 
-    private TextView t1, t2;
+    private TextView t1, t2, t3;
     private Spinner s1, s2;
     private Button button;
 
@@ -31,7 +33,7 @@ public class filterEquipmentActivity extends AppCompatActivity {
     private String CategoryName;
     private List<String> filter1 = new ArrayList<String>();
     private List<String> filter2 = new ArrayList<String>();
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,12 +75,16 @@ public class filterEquipmentActivity extends AppCompatActivity {
 
         t1 = (TextView) findViewById(R.id.textView1);
         t2 = (TextView) findViewById(R.id.textView2);
+        t3 = (TextView) findViewById(R.id.textView3);
+        t3.setTextColor(Color.parseColor("#0099ff"));
+
         s1 = (Spinner) findViewById(R.id.spinner1);
         s2 = (Spinner) findViewById(R.id.spinner2);
         button = (Button) findViewById(R.id.button);
 
         t1.setText(filter1.get(0));
         t2.setText(filter2.get(0));
+        t3.setText(CategoryName);
 
 
 
@@ -101,10 +107,14 @@ public class filterEquipmentActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Toast.makeText( filterEquipmentActivity.this,
-                        "OnClickListener : " +
-                                "\nSpinner 1 : "+ String.valueOf(s1.getSelectedItem()) +
-                                "\nSpinner 2 : "+ String.valueOf(s2.getSelectedItem()),
+                        "Select : " +
+                                "\nFilter 1 : "+ String.valueOf(s1.getSelectedItem()) +
+                                "\nFilter 2 : "+ String.valueOf(s2.getSelectedItem()),
                         Toast.LENGTH_SHORT).show();
+
+                Intent i = new Intent(filterEquipmentActivity.this, showFilterResultActivity.class);
+                //i.putExtra("filters", categorymap.get(key));
+                startActivity(i);
             }
 
         });

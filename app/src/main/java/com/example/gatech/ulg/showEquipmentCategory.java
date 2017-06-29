@@ -26,6 +26,7 @@ public class showEquipmentCategory extends AppCompatActivity {
     private String TAG = showEquipmentCategory.class.getSimpleName();
     private ArrayList<String> category = new ArrayList<String>();
     private Map<String, String> categorymap = new HashMap<String, String>();
+    private ListView listView;
 
 
     @Override
@@ -40,7 +41,7 @@ public class showEquipmentCategory extends AppCompatActivity {
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, category);
 
 
-        ListView listView = (ListView) findViewById(R.id.Listview_catetory);
+        listView = (ListView) findViewById(R.id.Listview_catetory);
         listView.setAdapter(itemsAdapter);
 
         // Button
@@ -78,35 +79,10 @@ public class showEquipmentCategory extends AppCompatActivity {
                     for ( int i = 0; i < categories.length(); i++){
                         String name = categories.getJSONObject(i).getString("name");
 
-//                        JSONArray a1 = categories.getJSONObject(i).getJSONArray("filter1");
-//                        JSONArray a2 = categories.getJSONObject(i).getJSONArray("filter2");
-//
-//                        List<String> templist1 = new ArrayList<String>();
-//                        List<String> templist2 = new ArrayList<String>();
-//
-//                        for(int j = 0; j < a1.length(); j++){
-//                            templist1.add(a1.get(j).toString());
-//                        }
-//                        for(int j = 0; j < a1.length(); j++){
-//                            templist1.add(a2.get(j).toString());
-//                        }
-
                         category.add(name);
                         categorymap.put(name, categories.getString(i));
 
                     }
-//
-//                    for (Map.Entry<String, String> entry : categorymap.entrySet()) {
-//                        Log.d(TAG, entry.getKey());
-//                        Log.d(TAG, entry.getValue());
-//
-//                        Log.d(TAG, "--------------------------------------");
-//                        List<String> valueList = entry.getValue();
-//                        for (String s : valueList) {
-//                            Log.d(TAG, s );
-//                        }
-//                    }
-
 
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
@@ -123,16 +99,9 @@ public class showEquipmentCategory extends AppCompatActivity {
                 }
             } else {
                 Log.e(TAG, "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Q____________Q", Toast.LENGTH_LONG).show();
-                    }
-                });
-
 
             }
-            return "1";
+            return null;
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override

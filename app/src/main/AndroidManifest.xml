@@ -22,7 +22,8 @@
         </activity>
         <activity android:name=".filterEquipmentActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".showFilterResultActivity"></activity>
+        <activity android:name=".showEquipmentInfoActivity" />
+        <activity android:name=".showFilterResultActivity" />
     </application>
 
 </manifest>
