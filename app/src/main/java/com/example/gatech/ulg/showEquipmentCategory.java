@@ -1,5 +1,6 @@
 package com.example.gatech.ulg;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -25,7 +25,7 @@ public class showEquipmentCategory extends AppCompatActivity {
     String[] listofCountries={"India","China","Nepal","Bhutan"};
     private String TAG = showEquipmentCategory.class.getSimpleName();
     private ArrayList<String> category = new ArrayList<String>();
-
+    private Map<String, String> categorymap = new HashMap<String, String>();
 
 
     @Override
@@ -47,10 +47,11 @@ public class showEquipmentCategory extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(showEquipmentCategory.this  ,category.get(position), Toast.LENGTH_LONG).show();
-
-
-
+                String key = category.get(position);
+                //Toast.makeText(showEquipmentCategory.this  , categorymap.get(key) , Toast.LENGTH_LONG).show();
+                Intent i = new Intent(showEquipmentCategory.this, filterEquipmentActivity.class);
+                i.putExtra("filters", categorymap.get(key));
+                startActivity(i);
             }
         });
 
@@ -73,48 +74,38 @@ public class showEquipmentCategory extends AppCompatActivity {
 
                     JSONArray categories = jsonObj.getJSONArray("category");
 
-                    Map<String, List<String>> map = new HashMap<String, List<String>>();
-                    Map<String, List<String>> filter2 = new HashMap<String, List<String>>();
 
                     for ( int i = 0; i < categories.length(); i++){
                         String name = categories.getJSONObject(i).getString("name");
-                        JSONArray a1 = categories.getJSONObject(i).getJSONArray("filter1");
-                        JSONArray a2 = categories.getJSONObject(i).getJSONArray("filter2");
 
-                        List<String> templist1 = new ArrayList<String>();
-                        List<String> templist2 = new ArrayList<String>();
-
-                        for(int j = 0; j < a1.length(); j++){
-                            templist1.add(a1.get(j).toString());
-                        }
-                        for(int j = 0; j < a1.length(); j++){
-                            templist1.add(a2.get(j).toString());
-                        }
+//                        JSONArray a1 = categories.getJSONObject(i).getJSONArray("filter1");
+//                        JSONArray a2 = categories.getJSONObject(i).getJSONArray("filter2");
+//
+//                        List<String> templist1 = new ArrayList<String>();
+//                        List<String> templist2 = new ArrayList<String>();
+//
+//                        for(int j = 0; j < a1.length(); j++){
+//                            templist1.add(a1.get(j).toString());
+//                        }
+//                        for(int j = 0; j < a1.length(); j++){
+//                            templist1.add(a2.get(j).toString());
+//                        }
 
                         category.add(name);
-                        filter1.put(name, templist1);
-                        filter2.put(name, templist2);
+                        categorymap.put(name, categories.getString(i));
 
                     }
 //
-//                    for (Map.Entry<String, List<String>> entry : filter1.entrySet()) {
+//                    for (Map.Entry<String, String> entry : categorymap.entrySet()) {
 //                        Log.d(TAG, entry.getKey());
+//                        Log.d(TAG, entry.getValue());
+//
 //                        Log.d(TAG, "--------------------------------------");
 //                        List<String> valueList = entry.getValue();
 //                        for (String s : valueList) {
 //                            Log.d(TAG, s );
 //                        }
 //                    }
-
-
-
-
-
-
-
-
-
-
 
 
                 } catch (final JSONException e) {
