@@ -108,8 +108,8 @@ public class filterEquipmentActivity extends AppCompatActivity {
 
                 Toast.makeText( filterEquipmentActivity.this,
                         "Select : " +
-                                "\nFilter 1 : "+ String.valueOf(s1.getSelectedItem()) +
-                                "\nFilter 2 : "+ String.valueOf(s2.getSelectedItem()),
+                                "Filter 1 : "+ String.valueOf(s1.getSelectedItem()) +
+                                " Filter 2 : "+ String.valueOf(s2.getSelectedItem()),
                         Toast.LENGTH_SHORT).show();
 
                 Intent i = new Intent(filterEquipmentActivity.this, showFilterResultActivity.class);

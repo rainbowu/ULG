@@ -27,6 +27,8 @@ public class showEquipmentCategory extends AppCompatActivity {
     private ArrayList<String> category = new ArrayList<String>();
     private Map<String, String> categorymap = new HashMap<String, String>();
     private ListView listView;
+    private String API = "https://backend-dot-unitedlab-171401.appspot.com/type/";
+    private ArrayAdapter<String> itemsAdapter;
 
 
     @Override
@@ -34,22 +36,17 @@ public class showEquipmentCategory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_equipment_category);
 
-        new GetEquipmentCategory().execute("https://backend-dot-unitedlab-171401.appspot.com/type/");
+        new GetEquipmentCategory().execute(API);
 
 
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, category);
-
-
+        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
         listView = (ListView) findViewById(R.id.Listview_catetory);
         listView.setAdapter(itemsAdapter);
-
         // Button
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String key = category.get(position);
-                //Toast.makeText(showEquipmentCategory.this  , categorymap.get(key) , Toast.LENGTH_LONG).show();
                 Intent i = new Intent(showEquipmentCategory.this, filterEquipmentActivity.class);
                 i.putExtra("filters", categorymap.get(key));
                 startActivity(i);
@@ -61,7 +58,7 @@ public class showEquipmentCategory extends AppCompatActivity {
     }
 
 
-    private class GetEquipmentCategory extends AsyncTask<String, Void, String> {
+    private class GetEquipmentCategory extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... urls) {
 
@@ -80,6 +77,7 @@ public class showEquipmentCategory extends AppCompatActivity {
                         String name = categories.getJSONObject(i).getString("name");
 
                         category.add(name);
+                        publishProgress(name);
                         categorymap.put(name, categories.getString(i));
 
                     }
@@ -101,20 +99,19 @@ public class showEquipmentCategory extends AppCompatActivity {
                 Log.e(TAG, "Couldn't get json from server.");
 
             }
-            return null;
+            return (null);
         }
-        // onPostExecute displays the results of the AsyncTask.
+
+        @Override
+        protected void onProgressUpdate(String... item) {
+            (itemsAdapter).add(item[0]);
+        }
+
         @Override
         protected void onPostExecute(String result) {
-            //Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+
+
         }
     }
-
-
-
-
-
-
-
 
 }
