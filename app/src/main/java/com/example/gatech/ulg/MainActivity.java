@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 new GetWeathers().execute(WEATHER_QUERY_URL_ZIP);
                 Get_view.setText(GetResult);
 
+
+
             }
         });
 
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 // call AsynTask to perform network operation on separate thread
                // new HttpAsyncTask().execute("http://hmkcode.appspot.com/jsonservlet");
 
-               new HttpAsyncTask().execute("https://backend-dot-unitedlab-171401.appspot.com/type/");
+               new HttpAsyncTask().execute("http://hmkcode.appspot.com/jsonservlet");
 
 
             }
@@ -139,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
             // 3. build jsonObject
             JSONObject jsonObject = new JSONObject();
             jsonObject.accumulate("name", "bad");
-            jsonObject.accumulate("data", "123123123123123");
-
+            jsonObject.accumulate("country", "123123123123123");
+            jsonObject.accumulate("twitter", "bad");
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
 
@@ -245,25 +247,26 @@ public class MainActivity extends AppCompatActivity {
             // 3. build jsonObject
             JSONObject js = new JSONObject();
             try {
-                js.accumulate("name", "Good");
-                js.accumulate("data", "US");
+                js.accumulate("name", "BOB");
+                js.accumulate("country", "US");
+                js.accumulate("twitter", "YOOOOOOOO!");
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-//            HttpHandler sh = new HttpHandler();
-//
-//            // Making a request to url and getting response
-//
-//            String jsonStr = sh.makePOSTServiceCall(urls[0],js);
-//            GetResult = jsonStr;
+            HttpHandler sh = new HttpHandler();
+
+            // Making a request to url and getting response
+
+            String jsonStr = sh.makePOSTServiceCall(urls[0],js);
+            GetResult = jsonStr;
 
 
-            //
-            String s = POST(urls[0],person);
-            Toast.makeText(getBaseContext(), s, Toast.LENGTH_LONG).show();
 
-            return s;
+//            String s = POST(urls[0],person);
+
+            return jsonStr;
 
         }
         // onPostExecute displays the results of the AsyncTask.

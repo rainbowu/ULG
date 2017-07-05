@@ -1,4 +1,6 @@
 package com.example.gatech.ulg;
+import android.os.Debug;
+import android.util.DebugUtils;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -54,27 +56,24 @@ public class HttpHandler {
         try {
             URL url = new URL(reqUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type","application/json");
-            conn.connect();
+            conn.setRequestProperty("Content-Type","application/json; charset=UTF-8");
 
-
-            // post json
-//            String json = "";
-
-            // 3. build jsonObject
-//            JSONObject js = new JSONObject();
-//            js.accumulate("name", "Bob");
-//            js.accumulate("country", "US");
-//            js.accumulate("twitter", "GGGGGG" );
+            Log.d(TAG, url.toString());
+            Log.d(TAG, jsonObject.toString());
 
             printout = new DataOutputStream(conn.getOutputStream ());
-            printout.writeBytes(URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            printout.writeBytes(jsonObject.toString());
             printout.flush ();
             printout.close ();
 
             InputStream in = new BufferedInputStream(conn.getInputStream());
             response = convertStreamToString(in);
+
+            Log.d(TAG, response);
+
 
         } catch (MalformedURLException e) {
             Log.e(TAG, "MalformedURLException: " + e.getMessage());
