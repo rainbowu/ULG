@@ -35,8 +35,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
-    //private static String WEATHER_QUERY_URL_ZIP = "http://api.openweathermap.org/data/2.5/weather?zip=30318&APPID=109d7d4557083d7fd1f40f9f5aaf861d";
-    private static String WEATHER_QUERY_URL_ZIP = "https://backend-dot-unitedlab-171401.appspot.com/hello/";
+    private static String WEATHER_QUERY_URL_ZIP = "https://unitedlab-171401.appspot.com/hello/";
 
     public ArrayList<String> WeatherInfo = new ArrayList<String>();
     public String GetResult = "";

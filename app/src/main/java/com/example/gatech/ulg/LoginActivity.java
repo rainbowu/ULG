@@ -1,6 +1,7 @@
 package com.example.gatech.ulg;
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -12,18 +13,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
+    private static final String LoginAPI = "https://unitedlab-171401.appspot.com/api/v1/auth/login/";
     private static final int REQUEST_SIGNUP = 0;
 
     @Bind(R.id.input_email) EditText _emailText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.btn_login) Button _loginButton;
     @Bind(R.id.link_signup) TextView _signupLink;
+
+
 
 
     @Override
@@ -66,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme);
+                R.style.Theme_AppCompat_DayNight_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
@@ -74,11 +81,23 @@ public class LoginActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
+
+
+
         // TODO: Implement your own authentication logic here.
+        HttpAsyncTask httpAsyncTask = new HttpAsyncTask(LoginAPI, email, password);
+        httpAsyncTask.execute(LoginAPI);
+
+
+
+//        new LoginActivity.HttpAsyncTask().execute(LoginAPI, email, password);
+
+
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
+
                         // On complete call either onLoginSuccess or onLoginFailed
                         onLoginSuccess();
                         // onLoginFailed();
@@ -130,8 +149,8 @@ public class LoginActivity extends AppCompatActivity {
             _emailText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 3 || password.length() > 10) {
+            _passwordText.setError("between 3 and 10 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);
@@ -139,5 +158,43 @@ public class LoginActivity extends AppCompatActivity {
 
         return valid;
     }
+
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+
+        private String url, email, password;
+        public  HttpAsyncTask(String url,String email,String pwd){
+            this.url = url;
+            this.email = email;
+            this.password = pwd;
+        }
+
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            // 3. build jsonObject
+            JSONObject js = new JSONObject();
+            try {
+                js.accumulate("email", email);
+                js.accumulate("password", password);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            HttpHandler sh = new HttpHandler();
+
+            String jsonStr = sh.makePOSTServiceCall(url,js);
+
+            return jsonStr;
+
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            //Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+        }
+    }
+
 
 }
