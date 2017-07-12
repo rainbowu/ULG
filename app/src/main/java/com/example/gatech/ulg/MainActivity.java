@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
     //private static String WEATHER_QUERY_URL_ZIP = "http://api.openweathermap.org/data/2.5/weather?zip=30318&APPID=109d7d4557083d7fd1f40f9f5aaf861d";
-    private static String WEATHER_QUERY_URL_ZIP = "https://backend-dot-unitedlab-171401.appspot.com/type/";
+    private static String WEATHER_QUERY_URL_ZIP = "https://backend-dot-unitedlab-171401.appspot.com/hello/";
 
     public ArrayList<String> WeatherInfo = new ArrayList<String>();
     public String GetResult = "";
@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Get = (Button) findViewById(R.id.button_get);
         Get_view = (TextView) findViewById(R.id.textView_get);
         etName = (EditText) findViewById(R.id.etName);
@@ -88,8 +87,6 @@ public class MainActivity extends AppCompatActivity {
                 new GetWeathers().execute(WEATHER_QUERY_URL_ZIP);
                 Get_view.setText(GetResult);
 
-
-
             }
         });
 
@@ -102,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 // call AsynTask to perform network operation on separate thread
                // new HttpAsyncTask().execute("http://hmkcode.appspot.com/jsonservlet");
 
-               new HttpAsyncTask().execute("http://hmkcode.appspot.com/jsonservlet");
+               new HttpAsyncTask().execute("https://backend-dot-unitedlab-171401.appspot.com/auth/login/");
 
 
             }
@@ -247,9 +244,8 @@ public class MainActivity extends AppCompatActivity {
             // 3. build jsonObject
             JSONObject js = new JSONObject();
             try {
-                js.accumulate("name", "BOB");
-                js.accumulate("country", "US");
-                js.accumulate("twitter", "YOOOOOOOO!");
+                js.accumulate("username", "wwb203");
+                js.accumulate("password", "sqlPW");
 
             } catch (JSONException e) {
                 e.printStackTrace();

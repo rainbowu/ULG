@@ -36,6 +36,8 @@ public class HttpHandler {
             URL url = new URL(reqUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
+            conn.setRequestProperty("Authorization","token b679973efbf6197ba69346d3986a63ea0a6caef8");
+
             // read the response
             InputStream in = new BufferedInputStream(conn.getInputStream());
             response = convertStreamToString(in);
@@ -60,6 +62,7 @@ public class HttpHandler {
             conn.setDoInput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type","application/json; charset=UTF-8");
+
 
             Log.d(TAG, url.toString());
             Log.d(TAG, jsonObject.toString());
