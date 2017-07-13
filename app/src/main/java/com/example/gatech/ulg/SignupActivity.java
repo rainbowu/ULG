@@ -2,6 +2,7 @@ package com.example.gatech.ulg;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,16 +12,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
 public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity";
+    private static final String SignUpAPI = "https://unitedlab-171401.appspot.com/api/v1/accounts/";
+
+    private Boolean SignupResult = false;
 
     @Bind(R.id.input_name)
     EditText _nameText;
-    @Bind(R.id.input_address) EditText _addressText;
+    @Bind(R.id.input_username) EditText _username;
     @Bind(R.id.input_email) EditText _emailText;
     @Bind(R.id.input_mobile) EditText _mobileText;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -76,21 +83,26 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.show();
 
         String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
+        String username = _username.getText().toString();
         String email = _emailText.getText().toString();
         String mobile = _mobileText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
+
         // TODO: Implement your own signup logic here.
+        HttpAsyncTask httpAsyncTask = new HttpAsyncTask(SignUpAPI, email, password, username);
+        httpAsyncTask.execute(SignUpAPI);
+
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
+                        if (SignupResult == true)
+                            onSignupSuccess();
+                        else
+                             onSignupFailed();
+
                         progressDialog.dismiss();
                     }
                 }, 3000);
@@ -99,13 +111,13 @@ public class SignupActivity extends AppCompatActivity {
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
+        Toast.makeText(getBaseContext(), "Account Created!", Toast.LENGTH_LONG).show();
         setResult(RESULT_OK, null);
-        finish();
+        //finish();
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(getBaseContext(), "Something wrong, please try again.", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
     }
 
@@ -113,7 +125,7 @@ public class SignupActivity extends AppCompatActivity {
         boolean valid = true;
 
         String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
+        String username = _username.getText().toString();
         String email = _emailText.getText().toString();
         String mobile = _mobileText.getText().toString();
         String password = _passwordText.getText().toString();
@@ -126,11 +138,11 @@ public class SignupActivity extends AppCompatActivity {
             _nameText.setError(null);
         }
 
-        if (address.isEmpty()) {
-            _addressText.setError("Enter Valid Address");
+        if (username.isEmpty()) {
+            _username.setError("Enter Valid Username");
             valid = false;
         } else {
-            _addressText.setError(null);
+            _username.setError(null);
         }
 
 
@@ -164,5 +176,53 @@ public class SignupActivity extends AppCompatActivity {
 
         return valid;
     }
+
+
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+
+        private String url, email, password, username;
+
+        public HttpAsyncTask(String url, String email, String pwd, String username) {
+            this.url = url;
+            this.email = email;
+            this.password = pwd;
+            this.username = username;
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            // 3. build jsonObject
+            JSONObject js = new JSONObject();
+            try {
+                js.accumulate("username", username);
+                js.accumulate("password", password);
+                js.accumulate("email", email);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            HttpHandler sh = new HttpHandler();
+
+            String jsonStr = sh.makePOSTServiceCall(url, js);
+
+            return jsonStr;
+
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
+            if (result != null)
+                SignupResult = true;
+            else
+                SignupResult = false;
+
+        }
+    }
+
 
 }

@@ -77,7 +77,9 @@ public class HttpHandler {
             conn.setDoInput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type","application/json; charset=UTF-8");
-            //conn.setRequestProperty("Cookie","csrftoken=G2W9GzHY8P4DAdqMKVSJ30LtIfdCc0kOudKLE97zUqjjeQH6U4MRr7RrtlYodXip; sessionid=4epjnr5jq209vjees4bad3reeeh6r6rz;");
+//            conn.setRequestProperty("Cookie","csrftoken=xYvIEAb5TVosSB0UmlkD4CB2URJe9vMECioHIOGSo85OTJRJ3q8j5Jbye24E7xp8;");
+//            cookie:csrftoken=xYvIEAb5TVosSB0UmlkD4CB2URJe9vMECioHIOGSo85OTJRJ3q8j5Jbye24E7xp8
+
 
 
             Log.d(TAG, url.toString());

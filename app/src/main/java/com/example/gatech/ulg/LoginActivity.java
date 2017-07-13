@@ -24,6 +24,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final String LoginAPI = "https://unitedlab-171401.appspot.com/api/v1/auth/login/";
     private static final int REQUEST_SIGNUP = 0;
+    private boolean LoginResult = false;
+
 
     @Bind(R.id.input_email) EditText _emailText;
     @Bind(R.id.input_password) EditText _passwordText;
@@ -82,25 +84,18 @@ public class LoginActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
 
-
-
         // TODO: Implement your own authentication logic here.
         HttpAsyncTask httpAsyncTask = new HttpAsyncTask(LoginAPI, email, password);
         httpAsyncTask.execute(LoginAPI);
 
-
-
-//        new LoginActivity.HttpAsyncTask().execute(LoginAPI, email, password);
-
-
-
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-
                         // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
+                        if (LoginResult == true)
+                            onLoginSuccess();
+                        else
+                             onLoginFailed();
                         progressDialog.dismiss();
                     }
                 }, 3000);
@@ -162,12 +157,12 @@ public class LoginActivity extends AppCompatActivity {
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
 
         private String url, email, password;
-        public  HttpAsyncTask(String url,String email,String pwd){
+
+        public HttpAsyncTask(String url, String email, String pwd) {
             this.url = url;
             this.email = email;
             this.password = pwd;
         }
-
 
         @Override
         protected String doInBackground(String... urls) {
@@ -184,17 +179,21 @@ public class LoginActivity extends AppCompatActivity {
 
             HttpHandler sh = new HttpHandler();
 
-            String jsonStr = sh.makePOSTServiceCall(url,js);
+            String jsonStr = sh.makePOSTServiceCall(url, js);
 
             return jsonStr;
 
         }
+
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            //Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
+            if (result != null)
+                LoginResult = true;
+            else
+                LoginResult = false;
+
         }
     }
-
-
 }
