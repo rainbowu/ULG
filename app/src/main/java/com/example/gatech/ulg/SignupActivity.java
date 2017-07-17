@@ -105,7 +105,7 @@ public class SignupActivity extends AppCompatActivity {
 
                         progressDialog.dismiss();
                     }
-                }, 3000);
+                }, 2000);
     }
 
 
@@ -113,7 +113,7 @@ public class SignupActivity extends AppCompatActivity {
         _signupButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "Account Created!", Toast.LENGTH_LONG).show();
         setResult(RESULT_OK, null);
-        //finish();
+        finish();
     }
 
     public void onSignupFailed() {
