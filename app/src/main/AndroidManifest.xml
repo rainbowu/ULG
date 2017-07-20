@@ -26,7 +26,8 @@
         <activity android:name=".showFilterResultActivity" />
         <activity android:name=".CreateCalenderActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".SignupActivity"></activity>
+        <activity android:name=".SignupActivity" />
+        <activity android:name=".MainPageActivity"></activity>
     </application>
 
 </manifest>

@@ -27,6 +27,9 @@ public class LoginActivity extends AppCompatActivity {
     private boolean LoginResult = false;
 
 
+    //https://unitedlab-171401.appspot.com/AccountInfo/
+
+
     @Bind(R.id.input_email) EditText _emailText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.btn_login) Button _loginButton;
@@ -98,6 +101,8 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 }, 2000);
+
+
     }
 
 
@@ -136,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(true);
 
 
-        Intent i = new Intent(LoginActivity.this, showEquipmentInfoActivity.class);
+        Intent i = new Intent(LoginActivity.this, MainPageActivity.class);
         startActivity(i);
         finish();
     }
@@ -208,8 +213,10 @@ public class LoginActivity extends AppCompatActivity {
                 LoginResult = true;
                 // Set the httpHandler Class's static isLogged to true
                 httpHandler.isLogged = true;
-            }else
+            }else {
                 LoginResult = false;
+                httpHandler.isLogged = false;
+            }
 
         }
     }
