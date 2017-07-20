@@ -15,6 +15,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
@@ -22,6 +25,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity";
     private static final String SignUpAPI = "https://unitedlab-171401.appspot.com/api/v1/accounts/";
+    private List<String> AccountPassword;
 
     private Boolean SignupResult = false;
 
@@ -112,7 +116,17 @@ public class SignupActivity extends AppCompatActivity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "Account Created!", Toast.LENGTH_LONG).show();
-        setResult(RESULT_OK, null);
+
+        AccountPassword = new ArrayList<String>();
+        AccountPassword.add(_emailText.getText().toString());
+        AccountPassword.add(_passwordText.getText().toString());
+
+
+        Intent intent = getIntent();
+        intent.putStringArrayListExtra("AccountPassword", (ArrayList<String>) AccountPassword);
+
+
+        setResult(RESULT_OK, intent);
         finish();
     }
 

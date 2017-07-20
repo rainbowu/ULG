@@ -28,8 +28,9 @@ import java.util.Map;
 public class HttpHandler {
 
     private static final String TAG = HttpHandler.class.getSimpleName();
-    static final String COOKIES_HEADER = "Set-Cookie";
-    static java.net.CookieManager msCookieManager = new java.net.CookieManager();
+    private static final String COOKIES_HEADER = "Set-Cookie";
+    private static java.net.CookieManager msCookieManager = new java.net.CookieManager();
+    public static boolean isLogged = false;
 
 
     private DataOutputStream printout;
@@ -47,10 +48,10 @@ public class HttpHandler {
 //            conn.setRequestProperty("Authorization","token b679973efbf6197ba69346d3986a63ea0a6caef8");
 //            conn.setRequestProperty("Cookie","csrftoken=G2W9GzHY8P4DAdqMKVSJ30LtIfdCc0kOudKLE97zUqjjeQH6U4MRr7RrtlYodXip; sessionid=4epjnr5jq209vjees4bad3reeeh6r6rz;");
 
-            if (msCookieManager.getCookieStore().getCookies().size() > 0) {
+
+            if (msCookieManager.getCookieStore().getCookies().size() > 0 && isLogged) {
                 conn.setRequestProperty("Cookie",
                         TextUtils.join("; ",  msCookieManager.getCookieStore().getCookies()));
-//                Log.d(TAG, msCookieManager.getCookieStore().getCookies().toString());
             }
 
             // read the response
@@ -80,6 +81,12 @@ public class HttpHandler {
 //            conn.setRequestProperty("Cookie","csrftoken=xYvIEAb5TVosSB0UmlkD4CB2URJe9vMECioHIOGSo85OTJRJ3q8j5Jbye24E7xp8;");
 //            cookie:csrftoken=xYvIEAb5TVosSB0UmlkD4CB2URJe9vMECioHIOGSo85OTJRJ3q8j5Jbye24E7xp8
 
+            // When isLogged, we need cookie to access the APIs.
+            if (msCookieManager.getCookieStore().getCookies().size() > 0 && isLogged) {
+                conn.setRequestProperty("Cookie",
+                        TextUtils.join("; ",  msCookieManager.getCookieStore().getCookies()));
+            }
+
 
 
             Log.d(TAG, url.toString());
@@ -93,7 +100,8 @@ public class HttpHandler {
             Map<String, List<String>> headerFields = conn.getHeaderFields();
             List<String> cookiesHeader = headerFields.get(COOKIES_HEADER);
 
-            if (cookiesHeader != null) {
+            // Not logging yet, Store the cookie(csrf token and the session id)
+            if (cookiesHeader != null && !isLogged) {
                 for (String cookie : cookiesHeader) {
                     msCookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
                 }

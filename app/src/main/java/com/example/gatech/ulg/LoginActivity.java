@@ -22,7 +22,7 @@ import butterknife.Bind;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
-    private static final String LoginAPI = "https://unitedlab-171401.appspot.com/api/v1/auth/login/";
+    private static final String LOGIN_API = "https://unitedlab-171401.appspot.com/api/v1/auth/login/";
     private static final int REQUEST_SIGNUP = 0;
     private boolean LoginResult = false;
 
@@ -65,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void login() {
-        Log.d(TAG, "Login");
 
         if (!validate()) {
             onLoginFailed();
@@ -85,8 +84,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
         // TODO: Implement your own authentication logic here.
-        HttpAsyncTask httpAsyncTask = new HttpAsyncTask(LoginAPI, email, password);
-        httpAsyncTask.execute(LoginAPI);
+        HttpAsyncTask httpAsyncTask = new HttpAsyncTask(LOGIN_API, email, password);
+        httpAsyncTask.execute(LOGIN_API);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -109,6 +108,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
+
+                // Although we've created an account, we need the cookies.
+                String signup_email = data.getStringArrayListExtra("AccountPassword").get(0);
+                String signup_pwd = data.getStringArrayListExtra("AccountPassword").get(1);
+
+                Log.d(TAG, signup_email);
+                Log.d(TAG, signup_pwd);
+
+                HttpAsyncTask signup_login = new HttpAsyncTask(LOGIN_API, signup_email, signup_pwd);
+                signup_login.execute(LOGIN_API);
+
                 Intent i = new Intent(LoginActivity.this, showEquipmentInfoActivity.class);
                 startActivity(i);
                 this.finish();
@@ -124,6 +134,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+
+
         Intent i = new Intent(LoginActivity.this, showEquipmentInfoActivity.class);
         startActivity(i);
         finish();
@@ -161,6 +173,7 @@ public class LoginActivity extends AppCompatActivity {
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
 
         private String url, email, password;
+        private HttpHandler httpHandler;
 
         public HttpAsyncTask(String url, String email, String pwd) {
             this.url = url;
@@ -181,9 +194,8 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            HttpHandler sh = new HttpHandler();
-
-            String jsonStr = sh.makePOSTServiceCall(url, js);
+            httpHandler = new HttpHandler();
+            String jsonStr = httpHandler.makePOSTServiceCall(url, js);
 
             return jsonStr;
 
@@ -192,9 +204,11 @@ public class LoginActivity extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            if (result != null)
+            if (result != null){
                 LoginResult = true;
-            else
+                // Set the httpHandler Class's static isLogged to true
+                httpHandler.isLogged = true;
+            }else
                 LoginResult = false;
 
         }

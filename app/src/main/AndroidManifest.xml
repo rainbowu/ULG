@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreateCalenderActivity">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 MainActivity
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +24,8 @@
         <activity android:name=".showEquipmentCategory" />
         <activity android:name=".showEquipmentInfoActivity" />
         <activity android:name=".showFilterResultActivity" />
+        <activity android:name=".CreateCalenderActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".LoginActivity" />
         <activity android:name=".SignupActivity"></activity>
     </application>
 
