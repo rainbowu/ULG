@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class filterEquipmentActivity extends AppCompatActivity {
+public class filterEquipmentActivity extends BaseActivity {
 
     private String TAG = filterEquipmentActivity.class.getSimpleName();
 
@@ -37,7 +38,11 @@ public class filterEquipmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_filter_equipment);
+
+        FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame); //Remember this is the FrameLayout area within your activity_main.xml
+        getLayoutInflater().inflate(R.layout.activity_filter_equipment, contentFrameLayout);
+
+
 
         Bundle bundle = getIntent().getExtras();
         filter = bundle.getString("filters");
@@ -67,7 +72,7 @@ public class filterEquipmentActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(), "Q____________Q", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Couldn't get json from server.", Toast.LENGTH_LONG).show();
                 }
             });
         }

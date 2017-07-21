@@ -34,22 +34,22 @@ public class BaseActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
 
                     case R.id.schedule:
-//                        Intent anIntent = new Intent(getApplicationContext(), TheClassYouWantToLoad.class);
-//                        startActivity(loadPlayer);
-//                        drawerLayout.closeDrawers();
+                        Intent intent_schedule = new Intent(getApplicationContext(), CurScheduleActivity.class);
+                        startActivity(intent_schedule);
+                        drawerLayout.closeDrawers();
                         break;
                     case R.id.ingroup:
-//                        Intent anIntent = new Intent(getApplicationContext(), TheClassYouWantToLoad.class);
-//                        startActivity(loadPlayer);
-//                        drawerLayout.closeDrawers();
+                        Intent intent_incategory = new Intent(getApplicationContext(), showEquipmentCategory.class);
+                        startActivity(intent_incategory);
+                        drawerLayout.closeDrawers();
                         break;
                     case R.id.outgroup:
-//                        Intent anIntent = new Intent(getApplicationContext(), TheClassYouWantToLoad.class);
-//                        startActivity(loadPlayer);
-//                        drawerLayout.closeDrawers();
+                        Intent intent_outcategor = new Intent(getApplicationContext(), showEquipmentCategory.class);
+                        startActivity(intent_outcategor);
+                        drawerLayout.closeDrawers();
                         break;
                     case R.id.setting:
-//                        Intent anIntent = new Intent(getApplicationContext(), TheClassYouWantToLoad.class);
+//                        Intent intent_setting = new Intent(getApplicationContext(), TheClassYouWantToLoad.class);
 //                        startActivity(loadPlayer);
 //                        drawerLayout.closeDrawers();
                         break;
