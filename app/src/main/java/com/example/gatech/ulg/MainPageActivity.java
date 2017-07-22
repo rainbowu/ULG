@@ -15,9 +15,6 @@ public class MainPageActivity extends BaseActivity {
     private static final String ACCOUNT_INFO_API = "https://unitedlab-171401.appspot.com/AccountInfo/";
     private static final String LOGOUT_API = "https://unitedlab-171401.appspot.com/logout/";
 
-
-
-
     private String result;
 
     @Override

@@ -45,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        _emailText.setText("kkk@gmail.com");
+        _passwordText.setText("kkk");
+
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override

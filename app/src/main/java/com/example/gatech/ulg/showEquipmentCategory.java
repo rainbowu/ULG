@@ -49,6 +49,10 @@ public class showEquipmentCategory extends BaseActivity {
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
         listView = (ListView) findViewById(R.id.Listview_catetory);
         listView.setAdapter(itemsAdapter);
+
+
+
+
         // Button
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

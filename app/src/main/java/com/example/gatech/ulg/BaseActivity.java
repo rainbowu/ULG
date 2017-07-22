@@ -49,9 +49,9 @@ public class BaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.setting:
-//                        Intent intent_setting = new Intent(getApplicationContext(), TheClassYouWantToLoad.class);
-//                        startActivity(loadPlayer);
-//                        drawerLayout.closeDrawers();
+                        Intent intent_setting = new Intent(getApplicationContext(), SettingActivity.class);
+                        startActivity(intent_setting);
+                        drawerLayout.closeDrawers();
                         break;
                     case R.id.logout:
                         Intent anIntent = new Intent(getApplicationContext(), LoginActivity.class);

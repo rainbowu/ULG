@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         else
             return false;
     }
-
+//
 //    public static String POST(String url, Person person){
 //        InputStream inputStream = null;
 //        String result = "";
@@ -140,9 +140,12 @@ public class MainActivity extends AppCompatActivity {
 //            jsonObject.accumulate("country", "123123123123123");
 //            jsonObject.accumulate("twitter", "bad");
 //            // 4. convert JSONObject to JSON to String
-//            json = jsonObject.toString();
 //
-//            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
+//
+//
+//            json = jsonObject.toString();
+////
+////            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
 //            // ObjectMapper mapper = new ObjectMapper();
 //            // json = mapper.writeValueAsString(person);
 //
