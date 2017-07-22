@@ -38,5 +38,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.github.alamkanak:android-week-view:1.2.6'
     compile 'com.github.amirdew:JSON:v1.0.0'
+    compile 'com.github.tittojose:timerangepicker-library:0.2'
+
     testCompile 'junit:junit:4.12'
 }
