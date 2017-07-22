@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.gatech.ulg.EvaluateManagerActivity">
+
+
+    <RatingBar
+        android:id="@+id/managerRatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/managerText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:numStars="5"
+        android:rating="5"
+        android:stepSize="1"
+        android:theme="@style/RatingBar"/>
+
+    <TextView
+        android:id="@+id/managerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Please rate the manager:"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/equipmentText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/managerRatingBar"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Please rate the equipment:"
+        android:textSize="18sp" />
+
+    <RatingBar
+        android:id="@+id/equipmentRatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/managerRatingBar"
+        android:layout_below="@+id/equipmentText"
+        android:layout_marginTop="10dp"
+        android:numStars="5"
+        android:rating="5"
+        android:stepSize="1"
+        android:theme="@style/RatingBar"/>
+
+    <EditText
+        android:id="@+id/reviewText"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/equipmentRatingBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/textframe"
+        android:ems="10"
+        android:gravity="top"
+        android:hint="Review:"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:selectAllOnFocus="true" />
+
+    <Button
+        android:id="@+id/submitReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="Submit" />
+
+
+</RelativeLayout>
