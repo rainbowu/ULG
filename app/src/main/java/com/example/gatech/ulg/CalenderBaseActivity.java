@@ -152,6 +152,10 @@ public abstract class CalenderBaseActivity extends BaseActivity implements WeekV
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
         Toast.makeText(this, "Clicked " + event.getName(), Toast.LENGTH_SHORT).show();
+        // Start event
+
+
+        // reverved event
 
     }
 

@@ -9,4 +9,6 @@
     <string name="async_error">Could not download events from the internet</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="wrongDurationTime">Something went wrong with your appointment...Please contact the manager!</string>
+
 </resources>
