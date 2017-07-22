@@ -20,6 +20,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+import eu.amirs.JSON;
 
 /**
  * Created by rainbowu on 19/06/2017.
@@ -67,7 +68,7 @@ public class HttpHandler {
         return response;
     }
 
-    public String makePOSTServiceCall(String reqUrl, JSONObject jsonObject) {
+    public String makePOSTServiceCall(String reqUrl, JSON jsonObject) {
         String response = null;
         try {
             URL url = new URL(reqUrl);

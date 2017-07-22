@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import eu.amirs.JSON;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -25,9 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String LOGIN_API = "https://unitedlab-171401.appspot.com/api/v1/auth/login/";
     private static final int REQUEST_SIGNUP = 0;
     private boolean LoginResult = false;
-
-
-    //https://unitedlab-171401.appspot.com/AccountInfo/
 
 
     @Bind(R.id.input_email) EditText _emailText;
@@ -127,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                 HttpAsyncTask signup_login = new HttpAsyncTask(LOGIN_API, signup_email, signup_pwd);
                 signup_login.execute(LOGIN_API);
 
-                Intent i = new Intent(LoginActivity.this, showEquipmentInfoActivity.class);
+                Intent i = new Intent(LoginActivity.this, CurScheduleActivity.class);
                 startActivity(i);
                 this.finish();
             }
@@ -144,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(true);
 
 
-        Intent i = new Intent(LoginActivity.this, MainPageActivity.class);
+        Intent i = new Intent(LoginActivity.this, CurScheduleActivity.class);
         startActivity(i);
         finish();
     }
@@ -202,8 +200,18 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            JSON test = JSON.create(
+                    JSON.dic(
+                            "email", email,
+                            "password", password
+                    )
+            );
+
+
+
+
             httpHandler = new HttpHandler();
-            String jsonStr = httpHandler.makePOSTServiceCall(url, js);
+            String jsonStr = httpHandler.makePOSTServiceCall(url, test);
 
             return jsonStr;
 

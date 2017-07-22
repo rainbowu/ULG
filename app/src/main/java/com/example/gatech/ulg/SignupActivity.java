@@ -21,6 +21,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
+import eu.amirs.JSON;
+
+
 public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity";
@@ -203,21 +206,16 @@ public class SignupActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... urls) {
 
-            // 3. build jsonObject
-            JSONObject js = new JSONObject();
-            try {
-                js.accumulate("username", username);
-                js.accumulate("password", password);
-                js.accumulate("email", email);
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            JSON registor = JSON.create(
+                    JSON.dic(
+                            "username", username,
+                            "password", password,
+                            "email", email
+                    )
+            );
 
             HttpHandler sh = new HttpHandler();
-
-            String jsonStr = sh.makePOSTServiceCall(url, js);
+            String jsonStr = sh.makePOSTServiceCall(url, registor);
 
             return jsonStr;
 
@@ -226,7 +224,6 @@ public class SignupActivity extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
             if (result != null)
                 SignupResult = true;
             else

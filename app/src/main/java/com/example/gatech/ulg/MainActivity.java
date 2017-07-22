@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 // call AsynTask to perform network operation on separate thread
                // new HttpAsyncTask().execute("http://hmkcode.appspot.com/jsonservlet");
 
-               new HttpAsyncTask().execute("https://backend-dot-unitedlab-171401.appspot.com/auth/login/");
+//               new HttpAsyncTask().execute("https://backend-dot-unitedlab-171401.appspot.com/auth/login/");
 
 
             }
@@ -239,40 +239,40 @@ public class MainActivity extends AppCompatActivity {
         return weather;
     }
 
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-
-            // 3. build jsonObject
-            JSONObject js = new JSONObject();
-            try {
-                js.accumulate("username", "wwb203");
-                js.accumulate("password", "sqlPW");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            HttpHandler sh = new HttpHandler();
-
-            // Making a request to url and getting response
-
-            String jsonStr = sh.makePOSTServiceCall(urls[0],js);
-            GetResult = jsonStr;
-
-
-
-//            String s = POST(urls[0],person);
-
-            return jsonStr;
-
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            //Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
-        }
-    }
+//    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+//        @Override
+//        protected String doInBackground(String... urls) {
+//
+//            // 3. build jsonObject
+//            JSONObject js = new JSONObject();
+//            try {
+//                js.accumulate("username", "wwb203");
+//                js.accumulate("password", "sqlPW");
+//
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            HttpHandler sh = new HttpHandler();
+//
+//            // Making a request to url and getting response
+//
+////            String jsonStr = sh.makePOSTServiceCall(urls[0],js);
+////            GetResult = jsonStr;
+//
+//
+//
+////            String s = POST(urls[0],person);
+//
+//            return jsonStr;
+//
+//        }
+//        // onPostExecute displays the results of the AsyncTask.
+//        @Override
+//        protected void onPostExecute(String result) {
+//            //Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+//        }
+//    }
 
 
 
