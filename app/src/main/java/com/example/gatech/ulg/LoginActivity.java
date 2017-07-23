@@ -190,24 +190,12 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... urls) {
 
-            // 3. build jsonObject
-            JSONObject js = new JSONObject();
-            try {
-                js.accumulate("email", email);
-                js.accumulate("password", password);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
             JSON test = JSON.create(
                     JSON.dic(
                             "email", email,
                             "password", password
                     )
             );
-
-
 
 
             httpHandler = new HttpHandler();

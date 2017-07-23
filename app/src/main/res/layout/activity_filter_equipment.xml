@@ -60,15 +60,15 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="200dp"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="43dp"
+        android:layout_marginBottom="30dp"
         android:layout_weight="1"
         android:text="Filter"
         android:textSize="30sp"
 
         tools:layout_editor_absoluteX="74dp"
-        tools:layout_editor_absoluteY="417dp" />
+        tools:layout_editor_absoluteY="417dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/filter1"
@@ -96,12 +96,12 @@
         android:id="@+id/seekBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/category"
         android:layout_alignLeft="@+id/filter3"
+        android:layout_alignRight="@+id/category"
         android:layout_alignStart="@+id/filter3"
         android:layout_below="@+id/filter3"
-        android:layout_marginTop="34dp"
-        android:layout_alignRight="@+id/category"
-        android:layout_alignEnd="@+id/category" />
+        android:layout_marginTop="34dp" />
 
     <TextView
         android:id="@+id/seekbarvalue"

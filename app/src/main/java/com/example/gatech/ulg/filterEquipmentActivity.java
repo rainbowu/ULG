@@ -44,6 +44,12 @@ public class filterEquipmentActivity extends BaseActivity {
     private List<String> ParameterEnumNames = new ArrayList<String>();
     private List<String> ParameterNumericalNames = new ArrayList<String>();
     private Map<String, String> FilteridMap = new HashMap<String, String>();
+    private Map<String, Spinner> SpinnerMap = new HashMap<String, Spinner>();
+    private Map<String, TextView> SeekBarValueMap = new HashMap<String, TextView>();
+
+    private String searchResult;
+
+
     private int step = 1;
 
 
@@ -67,6 +73,7 @@ public class filterEquipmentActivity extends BaseActivity {
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         button = (Button) findViewById(R.id.button);
 
+
         categoryNameTextview = (TextView) findViewById(R.id.category);
         categoryNameTextview.setTextColor(Color.parseColor("#0099ff"));
 
@@ -89,6 +96,7 @@ public class filterEquipmentActivity extends BaseActivity {
 
                 if (spec.key("paraType").stringValue().equals("enum")) {
                     ArrayList<String> temp = new ArrayList<String>();
+                    temp.add("Any");
 
                     ParameterEnumNames.add(spec.key("name").stringValue());
                     FilteridMap.put(spec.key("name").stringValue(), spec.key("id").stringValue());
@@ -129,9 +137,15 @@ public class filterEquipmentActivity extends BaseActivity {
                     android.R.layout.simple_spinner_item, ParameterEnumChoice.get(0));
             filter1dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+            SpinnerMap.put(ParameterEnumNames.get(0), spinner1);
+
+
             ArrayAdapter<String> filter2dataAdapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_spinner_item, ParameterEnumChoice.get(1));
             filter2dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            SpinnerMap.put(ParameterEnumNames.get(1), spinner2);
+
 
             spinner1.setAdapter(filter1dataAdapter);
             spinner2.setAdapter(filter2dataAdapter);
@@ -144,6 +158,8 @@ public class filterEquipmentActivity extends BaseActivity {
             ArrayAdapter<String> filter1dataAdapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_spinner_item, ParameterEnumChoice.get(0));
             filter1dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            SpinnerMap.put(ParameterEnumNames.get(0), spinner1);
 
             spinner1.setAdapter(filter1dataAdapter);
 
@@ -164,6 +180,7 @@ public class filterEquipmentActivity extends BaseActivity {
             filter3Textview.setText(ParameterNumericalNames.get(0));
             seekBar.setMax((seekBarMax - seekBarMin) / step);
 
+            SeekBarValueMap.put(ParameterNumericalNames.get(0), seekBarValue);
 
             seekBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
@@ -178,11 +195,7 @@ public class filterEquipmentActivity extends BaseActivity {
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int progress,
                                                       boolean fromUser) {
-                            // Ex :
-                            // And finally when you want to retrieve the value in the range you
-                            // wanted in the first place -> [3-5]
-                            //
-                            // if progress = 13 -> value = 3 + (13 * 0.1) = 4.3
+
                             double value = seekBarMin + (progress * step);
                             seekBarValue.setText(String.valueOf((int) value));
                         }
@@ -198,43 +211,76 @@ public class filterEquipmentActivity extends BaseActivity {
 
         button.setOnClickListener(new View.OnClickListener() {
 
+
+            // TODO: Turn the json create into more flexible way.
+
             @Override
             public void onClick(View v) {
 
+                JSONArray paraList = new JSONArray();
+
+                for (int i = 0; i < ParameterEnumNames.size(); i++) {
+                    Log.d(TAG, "NAME"+ParameterEnumNames.get(i).toString());
+
+                    String id = FilteridMap.get(ParameterEnumNames.get(i));
+                    String value = SpinnerMap.get(ParameterEnumNames.get(i)).getSelectedItem().toString();
+                    String disableSearch = "false";
+
+                    if (value.equals("Any")){
+                        disableSearch = "true";
+                    }
+
+                    JSONObject parameter = new JSONObject();
+                    try {
+                        parameter.put("disabled", disableSearch);
+                        parameter.put("specID", id);
+                        parameter.put("value", value);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    paraList.put(parameter);
+
+                }
+
+                for (int i = 0; i < ParameterNumericalNames.size(); i++) {
+                    String id = FilteridMap.get(ParameterNumericalNames.get(i));
+                    String value = SeekBarValueMap.get(ParameterNumericalNames.get(i)).getText().toString();
+                    String disableSearch = "false";
+
+                    if (value.equals("")){
+                        disableSearch = "true";
+                    }
+                    JSONObject parameter = new JSONObject();
+                    try {
+                        parameter.put("disabled", disableSearch);
+                        parameter.put("specID", id);
+                        parameter.put("value", value);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    paraList.put(parameter);
+
+                }
+
                 // POST data
+                JSON generatedJsonObject;
 
-                // generate POST JSON
-
-                JSON generatedJsonObject = JSON.create(
+                generatedJsonObject = JSON.create(
                         JSON.dic(
                                 "typeID", Categoryid,
-                                "paraList", JSON.array(
-                                        JSON.dic(
-                                                "specID", "1",
-                                                "value", "1",
-                                                "disabled", "false"
-                                        ),
-                                        JSON.dic(
-                                                "specID", "1",
-                                                "value", "1",
-                                                "disabled", "false"
-                                        ),
-                                        JSON.dic(
-                                                "specID", "1",
-                                                "value", "1",
-                                                "disabled", "false"
-                                        )
-                                )
+                                "paraList", paraList
                         )
                 );
 
+                HttpAsyncTask httpAsyncTask = new HttpAsyncTask(POST_EQUIPSEARCH_API, generatedJsonObject.toString());
+                httpAsyncTask.execute(POST_EQUIPSEARCH_API);
 
 
-                Intent i = new Intent(filterEquipmentActivity.this, showFilterResultActivity.class);
-                //i.putExtra("filters", categorymap.get(key));
-                startActivity(i);
+                // TODO send result to show showFilterResultActivity
+//                Intent i = new Intent(filterEquipmentActivity.this, showFilterResultActivity.class);
+//                //i.putExtra("searchResult", searchResult);
+//                startActivity(i);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
             }
-
         });
 
 
@@ -243,20 +289,45 @@ public class filterEquipmentActivity extends BaseActivity {
 
 
 
-    private class SearchEquipment extends AsyncTask<String, String, String> {
-        @Override
-        protected String doInBackground(String... urls) {
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
 
-            HttpHandler sh = new HttpHandler();
-            String jsonStr = sh.makeGETServiceCall(urls[0]);
+        private String url;
+        private HttpHandler httpHandler;
+        private String postdata;
 
-
-            return jsonStr;
+        public HttpAsyncTask(String url, String postdata) {
+            this.url = url;
+            this.postdata = postdata;
         }
 
         @Override
+        protected String doInBackground(String... urls) {
+
+            JSON postjson = new JSON(postdata);
+
+
+            httpHandler = new HttpHandler();
+            String jsonStr = httpHandler.makePOSTServiceCall(url, postjson);
+
+            Log.d(TAG, jsonStr);
+            return jsonStr;
+
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
         protected void onPostExecute(String result) {
 
+            searchResult = result;
+
+            JSON resultjson = new JSON(result);
+
+            if (resultjson.key("equipList").count() == 0){
+                Toast.makeText(getApplicationContext(), "Sorry, No matching results. Please change filters", Toast.LENGTH_LONG).show();
+            }else {
+
+                Log.d(TAG, result);
+            }
 
         }
     }
