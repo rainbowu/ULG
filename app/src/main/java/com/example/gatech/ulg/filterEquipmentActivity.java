@@ -2,13 +2,14 @@ package com.example.gatech.ulg;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,22 +19,36 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import eu.amirs.JSON;
 
 public class filterEquipmentActivity extends BaseActivity {
 
+    private String POST_EQUIPSEARCH_API = "https://unitedlab-171401.appspot.com/EquipSearch/";
+
+
     private String TAG = filterEquipmentActivity.class.getSimpleName();
 
-    private TextView t1, t2, t3;
-    private Spinner s1, s2;
+    private TextView categoryNameTextview, filter1Textview, filter2Textview, filter3Textview, seekBarValue;
+    private Spinner spinner1, spinner2;
+    private SeekBar seekBar;
     private Button button;
+    private String Categoryid;
 
-    String[] listofSpinner = {"Item:","China","Nepal","Bhutan"};
-    private  String filter;
-    private  JSONArray categories;
-    private String CategoryName;
-    private List<String> filter1 = new ArrayList<String>();
-    private List<String> filter2 = new ArrayList<String>();
+    private String CategoryName = "Category";
+
+    private List<List<String>> ParameterEnumChoice = new ArrayList<List<String>>();
+    private List<String> ParameterEnumNames = new ArrayList<String>();
+    private List<String> ParameterNumericalNames = new ArrayList<String>();
+    private Map<String, String> FilteridMap = new HashMap<String, String>();
+    private int step = 1;
+
+
+    private int seekBarMin, seekBarMax;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,67 +58,142 @@ public class filterEquipmentActivity extends BaseActivity {
         getLayoutInflater().inflate(R.layout.activity_filter_equipment, contentFrameLayout);
 
 
+        filter1Textview = (TextView) findViewById(R.id.filter1);
+        filter2Textview = (TextView) findViewById(R.id.filter2);
+        filter3Textview = (TextView) findViewById(R.id.filter3);
+        seekBarValue = (TextView) findViewById(R.id.seekbarvalue);
+        spinner1 = (Spinner) findViewById(R.id.spinner1);
+        spinner2 = (Spinner) findViewById(R.id.spinner2);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        button = (Button) findViewById(R.id.button);
+
+        categoryNameTextview = (TextView) findViewById(R.id.category);
+        categoryNameTextview.setTextColor(Color.parseColor("#0099ff"));
 
         Bundle bundle = getIntent().getExtras();
-        filter = bundle.getString("filters");
+
+
+        String filterstr = bundle.getString("filters");
+        JSON filter = new JSON(filterstr);
+
+        // Parse data from JSON
         if (filter != null) {
 
-            try{
-                JSONObject category = new JSONObject(filter);
 
-                CategoryName = category.getString("name");
+            CategoryName = filter.key("name").stringValue();
+            Categoryid = filter.key("id").stringValue();
 
-                JSONArray f1 = category.getJSONArray("filter1");
-                JSONArray f2 = category.getJSONArray("filter2");
+            for (int i = 0; i < filter.key("specs").count(); i++) {
+                JSON spec = filter.key("specs").index(i);
 
-                for(int i = 0; i < f1.length(); i++){
-                    filter1.add(f1.get(i).toString());
+
+                if (spec.key("paraType").stringValue().equals("enum")) {
+                    ArrayList<String> temp = new ArrayList<String>();
+
+                    ParameterEnumNames.add(spec.key("name").stringValue());
+                    FilteridMap.put(spec.key("name").stringValue(), spec.key("id").stringValue());
+
+                    for (int j = 0; j < spec.key("parameter").count(); j++) {
+                        JSON parameter = spec.key("parameter").index(j);
+                        temp.add(parameter.key("name").stringValue());
+                    }
+                    Log.d(TAG, temp.toString());
+
+                    ParameterEnumChoice.add(temp);
+                } else if (spec.key("paraType").stringValue().equals("numerical")) {
+                    ParameterNumericalNames.add(spec.key("name").stringValue());
+                    FilteridMap.put(spec.key("name").stringValue(), spec.key("id").stringValue());
+
+                    seekBarMin = spec.key("parameter").index(0).key("name").intValue();
+                    seekBarMax = spec.key("parameter").index(1).key("name").intValue();
                 }
-                for(int j = 0; j < f2.length(); j++){
-                    filter2.add(f2.get(j).toString());
-                }
-            }catch (JSONException e) {
-                //some exception handler code.
             }
 
-
-        }else {
+        } else {
             Log.e(TAG, "Couldn't get json from server.");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), "Couldn't get json from server.", Toast.LENGTH_LONG).show();
-                }
-            });
+            Toast.makeText(getApplicationContext(), "Couldn't get data from server.", Toast.LENGTH_LONG).show();
+        }
+
+        categoryNameTextview.setText(CategoryName);
+
+        Log.d(TAG, ParameterNumericalNames.toString());
+
+        // Display data through UI
+        if (ParameterEnumNames.size() >= 2) {
+
+
+            filter1Textview.setText(ParameterEnumNames.get(0));
+            filter2Textview.setText(ParameterEnumNames.get(1));
+
+            ArrayAdapter<String> filter1dataAdapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, ParameterEnumChoice.get(0));
+            filter1dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            ArrayAdapter<String> filter2dataAdapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, ParameterEnumChoice.get(1));
+            filter2dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            spinner1.setAdapter(filter1dataAdapter);
+            spinner2.setAdapter(filter2dataAdapter);
+
+
+        } else if (ParameterEnumNames.size() == 1) {
+
+            filter1Textview.setText(ParameterEnumNames.get(0));
+
+            ArrayAdapter<String> filter1dataAdapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, ParameterEnumChoice.get(0));
+            filter1dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            spinner1.setAdapter(filter1dataAdapter);
+
+            filter2Textview.setVisibility(View.INVISIBLE);
+            spinner2.setVisibility(View.INVISIBLE);
+
+
+        } else {
+            filter1Textview.setVisibility(View.INVISIBLE);
+            spinner1.setVisibility(View.INVISIBLE);
+            filter2Textview.setVisibility(View.INVISIBLE);
+            spinner2.setVisibility(View.INVISIBLE);
         }
 
 
-        t1 = (TextView) findViewById(R.id.textView1);
-        t2 = (TextView) findViewById(R.id.textView2);
-        t3 = (TextView) findViewById(R.id.textView3);
-        t3.setTextColor(Color.parseColor("#0099ff"));
+        if (ParameterNumericalNames.size() == 1) {
 
-        s1 = (Spinner) findViewById(R.id.spinner1);
-        s2 = (Spinner) findViewById(R.id.spinner2);
-        button = (Button) findViewById(R.id.button);
-
-        t1.setText(filter1.get(0));
-        t2.setText(filter2.get(0));
-        t3.setText(CategoryName);
+            filter3Textview.setText(ParameterNumericalNames.get(0));
+            seekBar.setMax((seekBarMax - seekBarMin) / step);
 
 
+            seekBar.setOnSeekBarChangeListener(
+                    new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+                        }
 
-        ArrayAdapter<String> filter1dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, filter1.subList(1, filter1.size() ));
-        filter1dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+                        }
 
-        ArrayAdapter<String> filter2dataAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, filter2.subList(1, filter1.size() ));
-        filter2dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress,
+                                                      boolean fromUser) {
+                            // Ex :
+                            // And finally when you want to retrieve the value in the range you
+                            // wanted in the first place -> [3-5]
+                            //
+                            // if progress = 13 -> value = 3 + (13 * 0.1) = 4.3
+                            double value = seekBarMin + (progress * step);
+                            seekBarValue.setText(String.valueOf((int) value));
+                        }
+                    }
+            );
 
 
-        s1.setAdapter(filter1dataAdapter);
-        s2.setAdapter(filter2dataAdapter);
+        } else {
+            filter3Textview.setVisibility(View.INVISIBLE);
+            seekBar.setVisibility(View.INVISIBLE);
+        }
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -111,11 +201,34 @@ public class filterEquipmentActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText( filterEquipmentActivity.this,
-                        "Select : " +
-                                "Filter 1 : "+ String.valueOf(s1.getSelectedItem()) +
-                                " Filter 2 : "+ String.valueOf(s2.getSelectedItem()),
-                        Toast.LENGTH_SHORT).show();
+                // POST data
+
+                // generate POST JSON
+
+                JSON generatedJsonObject = JSON.create(
+                        JSON.dic(
+                                "typeID", Categoryid,
+                                "paraList", JSON.array(
+                                        JSON.dic(
+                                                "specID", "1",
+                                                "value", "1",
+                                                "disabled", "false"
+                                        ),
+                                        JSON.dic(
+                                                "specID", "1",
+                                                "value", "1",
+                                                "disabled", "false"
+                                        ),
+                                        JSON.dic(
+                                                "specID", "1",
+                                                "value", "1",
+                                                "disabled", "false"
+                                        )
+                                )
+                        )
+                );
+
+
 
                 Intent i = new Intent(filterEquipmentActivity.this, showFilterResultActivity.class);
                 //i.putExtra("filters", categorymap.get(key));
@@ -126,4 +239,33 @@ public class filterEquipmentActivity extends BaseActivity {
 
 
     }
+
+
+
+
+    private class SearchEquipment extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            HttpHandler sh = new HttpHandler();
+            String jsonStr = sh.makeGETServiceCall(urls[0]);
+
+
+            return jsonStr;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+
+        }
+    }
+
+
+
+
+
 }
+
+
+

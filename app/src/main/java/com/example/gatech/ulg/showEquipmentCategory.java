@@ -20,17 +20,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.amirs.JSON;
+
 
 public class showEquipmentCategory extends BaseActivity {
 
-    //String[] listofCategory = ["Evaporator","entrifuges‎","glassware‎","porcelainware"‎, "Magnifiers","Microscopes‎","Thermometers‎"];
-
+    private String GET_EQUIPTYPELIST_API = "https://unitedlab-171401.appspot.com/EquipTypeList/";
 
     private String TAG = showEquipmentCategory.class.getSimpleName();
     private ArrayList<String> category = new ArrayList<String>();
     private Map<String, String> categorymap = new HashMap<String, String>();
     private ListView listView;
-    private String API = "https://backend-dot-unitedlab-171401.appspot.com/type/";
     private ArrayAdapter<String> itemsAdapter;
 
 
@@ -42,18 +42,13 @@ public class showEquipmentCategory extends BaseActivity {
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame); //Remember this is the FrameLayout area within your activity_main.xml
         getLayoutInflater().inflate(R.layout.activity_show_equipment_category, contentFrameLayout);
 
-
-        new GetEquipmentCategory().execute(API);
-
+        new GetEquipmentCategory().execute(GET_EQUIPTYPELIST_API);
 
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
         listView = (ListView) findViewById(R.id.Listview_catetory);
         listView.setAdapter(itemsAdapter);
 
 
-
-
-        // Button
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -63,8 +58,6 @@ public class showEquipmentCategory extends BaseActivity {
                 startActivity(i);
             }
         });
-
-
 
     }
 
@@ -76,41 +69,22 @@ public class showEquipmentCategory extends BaseActivity {
             HttpHandler sh = new HttpHandler();
             String jsonStr = sh.makeGETServiceCall(urls[0]);
 
-            if (jsonStr != null) {
-                try {
-                    //Log.d(TAG, "Get: " + jsonStr);
-                    JSONObject jsonObj = new JSONObject(jsonStr);
+            Log.d(TAG, "Get: " + jsonStr);
 
-                    JSONArray categories = jsonObj.getJSONArray("category");
+            JSON EquipTypeList = new JSON(jsonStr);
 
+            EquipTypeList.key("Library").count();
 
-                    for ( int i = 0; i < categories.length(); i++){
-                        String name = categories.getJSONObject(i).getString("name");
+            for(int i=0; i<EquipTypeList.key("Library").count(); i++){
 
-                        category.add(name);
-                        publishProgress(name);
-                        categorymap.put(name, categories.getString(i));
-
-                    }
-
-                } catch (final JSONException e) {
-                    Log.e(TAG, "Json parsing error: " + e.getMessage());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    "Json parsing error: " + e.getMessage(),
-                                    Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    });
-
-                }
-            } else {
-                Log.e(TAG, "Couldn't get json from server.");
-
+                String name = EquipTypeList.key("Library").index(i).key("name").stringValue();
+                String specs = EquipTypeList.key("Library").index(i).toString();
+                category.add(name);
+                publishProgress(name);
+                categorymap.put(name, specs);
             }
-            return (null);
+
+            return jsonStr;
         }
 
         @Override

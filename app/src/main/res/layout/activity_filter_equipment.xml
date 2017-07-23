@@ -7,7 +7,7 @@
     tools:context="com.example.gatech.ulg.filterEquipmentActivity">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/filter2"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -27,12 +27,12 @@
         android:layout_weight="1"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="124dp"
-        android:layout_below="@+id/textView1"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_alignStart="@+id/textView1" />
+        android:layout_below="@+id/filter1"
+        android:layout_alignLeft="@+id/filter1"
+        android:layout_alignStart="@+id/filter1" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/category"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
@@ -51,9 +51,9 @@
         android:layout_weight="1"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="48dp"
-        android:layout_below="@+id/textView2"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_alignStart="@+id/textView2" />
+        android:layout_below="@+id/filter2"
+        android:layout_alignLeft="@+id/filter2"
+        android:layout_alignStart="@+id/filter2" />
 
     <Button
         android:id="@+id/button"
@@ -71,15 +71,45 @@
         tools:layout_editor_absoluteY="417dp" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/filter1"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:layout_weight="1"
         android:text="TextView"
-        tools:layout_below="@+id/textView3"
-        android:layout_below="@+id/textView3"
-        android:layout_alignLeft="@+id/textView3"
-        android:layout_alignStart="@+id/textView3" />
+        tools:layout_below="@+id/category"
+        android:layout_below="@+id/category"
+        android:layout_alignLeft="@+id/category"
+        android:layout_alignStart="@+id/category" />
+
+    <TextView
+        android:id="@+id/filter3"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinner2"
+        android:layout_alignStart="@+id/spinner2"
+        android:layout_below="@+id/spinner2"
+        android:layout_marginTop="19dp"
+        android:text="TextView" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/filter3"
+        android:layout_alignStart="@+id/filter3"
+        android:layout_below="@+id/filter3"
+        android:layout_marginTop="34dp"
+        android:layout_alignRight="@+id/category"
+        android:layout_alignEnd="@+id/category" />
+
+    <TextView
+        android:id="@+id/seekbarvalue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text=""
+        android:layout_below="@+id/filter3"
+        android:layout_centerHorizontal="true" />
 
 </android.widget.RelativeLayout>
