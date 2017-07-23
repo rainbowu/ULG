@@ -1,6 +1,5 @@
 package com.example.gatech.ulg;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,9 +31,10 @@ public class filterEquipmentActivity extends BaseActivity {
 
     private String TAG = filterEquipmentActivity.class.getSimpleName();
 
-    private TextView categoryNameTextview, filter1Textview, filter2Textview, filter3Textview, seekBarValue;
-    private Spinner spinner1, spinner2;
-    private SeekBar seekBar;
+    private TextView categoryNameTextview, filter1Textview, filter2Textview, filter3Textview;
+    private TextView seekBarValue1, seekBarValue2, seekBarValue3;
+    private Spinner spinner1, spinner2, spinner3;
+    private SeekBar seekBar1, seekBar2, seekBar3;
     private Button button;
     private String Categoryid;
 
@@ -46,14 +46,17 @@ public class filterEquipmentActivity extends BaseActivity {
     private Map<String, String> FilteridMap = new HashMap<String, String>();
     private Map<String, Spinner> SpinnerMap = new HashMap<String, Spinner>();
     private Map<String, TextView> SeekBarValueMap = new HashMap<String, TextView>();
+    private List<Spinner> spinners = new ArrayList<Spinner>();
+    private List<SeekBar> seekbars = new ArrayList<SeekBar>();
+    private List<TextView> seekbarvalues = new ArrayList<TextView>();
+    private List<TextView> filternames = new ArrayList<TextView>();
+    private List<List<Integer>> ParameterNumericalRange = new ArrayList<List<Integer>>();
+
 
     private String searchResult;
-
-
+    private int currentFilterCount = 0;
     private int step = 1;
 
-
-    private int seekBarMin, seekBarMax;
 
 
     @Override
@@ -67,10 +70,32 @@ public class filterEquipmentActivity extends BaseActivity {
         filter1Textview = (TextView) findViewById(R.id.filter1);
         filter2Textview = (TextView) findViewById(R.id.filter2);
         filter3Textview = (TextView) findViewById(R.id.filter3);
-        seekBarValue = (TextView) findViewById(R.id.seekbarvalue);
+        filternames.add(filter1Textview);
+        filternames.add(filter2Textview);
+        filternames.add(filter3Textview);
+
+
+        seekBarValue1 = (TextView) findViewById(R.id.seekbarvalue1);
+        seekBarValue2 = (TextView) findViewById(R.id.seekbarvalue2);
+        seekBarValue3 = (TextView) findViewById(R.id.seekbarvalue3);
+        seekbarvalues.add(seekBarValue1);
+        seekbarvalues.add(seekBarValue2);
+        seekbarvalues.add(seekBarValue3);
+
         spinner1 = (Spinner) findViewById(R.id.spinner1);
         spinner2 = (Spinner) findViewById(R.id.spinner2);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        spinner3 = (Spinner) findViewById(R.id.spinner3);
+        spinners.add(spinner1);
+        spinners.add(spinner2);
+        spinners.add(spinner3);
+
+        seekBar1 = (SeekBar) findViewById(R.id.seekBar1);
+        seekBar2 = (SeekBar) findViewById(R.id.seekBar2);
+        seekBar3 = (SeekBar) findViewById(R.id.seekBar3);
+        seekbars.add(seekBar1);
+        seekbars.add(seekBar2);
+        seekbars.add(seekBar3);
+
         button = (Button) findViewById(R.id.button);
 
 
@@ -112,8 +137,10 @@ public class filterEquipmentActivity extends BaseActivity {
                     ParameterNumericalNames.add(spec.key("name").stringValue());
                     FilteridMap.put(spec.key("name").stringValue(), spec.key("id").stringValue());
 
-                    seekBarMin = spec.key("parameter").index(0).key("name").intValue();
-                    seekBarMax = spec.key("parameter").index(1).key("name").intValue();
+                    ArrayList<Integer> temp = new ArrayList<Integer>();
+                    temp.add(spec.key("parameter").index(0).key("name").intValue());
+                    temp.add(spec.key("parameter").index(1).key("name").intValue());
+                    ParameterNumericalRange.add(temp);
                 }
             }
 
@@ -127,62 +154,40 @@ public class filterEquipmentActivity extends BaseActivity {
         Log.d(TAG, ParameterNumericalNames.toString());
 
         // Display data through UI
-        if (ParameterEnumNames.size() >= 2) {
+        for (int i = 0; i < ParameterEnumNames.size(); i++) {
 
+            filternames.get(currentFilterCount).setText(ParameterEnumNames.get(i));
 
-            filter1Textview.setText(ParameterEnumNames.get(0));
-            filter2Textview.setText(ParameterEnumNames.get(1));
+            ArrayAdapter<String> filterdataAdapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, ParameterEnumChoice.get(i));
 
-            ArrayAdapter<String> filter1dataAdapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_spinner_item, ParameterEnumChoice.get(0));
-            filter1dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            filterdataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            SpinnerMap.put(ParameterEnumNames.get(0), spinner1);
+            spinners.get(currentFilterCount).setAdapter(filterdataAdapter);
 
+            SpinnerMap.put(ParameterEnumNames.get(i), spinners.get(currentFilterCount));
 
-            ArrayAdapter<String> filter2dataAdapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_spinner_item, ParameterEnumChoice.get(1));
-            filter2dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Hide unused seekbar
+            seekbars.get(currentFilterCount).setVisibility(View.INVISIBLE);
 
-            SpinnerMap.put(ParameterEnumNames.get(1), spinner2);
-
-
-            spinner1.setAdapter(filter1dataAdapter);
-            spinner2.setAdapter(filter2dataAdapter);
-
-
-        } else if (ParameterEnumNames.size() == 1) {
-
-            filter1Textview.setText(ParameterEnumNames.get(0));
-
-            ArrayAdapter<String> filter1dataAdapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_spinner_item, ParameterEnumChoice.get(0));
-            filter1dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-            SpinnerMap.put(ParameterEnumNames.get(0), spinner1);
-
-            spinner1.setAdapter(filter1dataAdapter);
-
-            filter2Textview.setVisibility(View.INVISIBLE);
-            spinner2.setVisibility(View.INVISIBLE);
-
-
-        } else {
-            filter1Textview.setVisibility(View.INVISIBLE);
-            spinner1.setVisibility(View.INVISIBLE);
-            filter2Textview.setVisibility(View.INVISIBLE);
-            spinner2.setVisibility(View.INVISIBLE);
+            currentFilterCount += 1;
         }
 
+        Log.d(TAG, ParameterNumericalRange.toString());
 
-        if (ParameterNumericalNames.size() == 1) {
+        for (int i = 0; i < ParameterNumericalNames.size(); i++) {
 
-            filter3Textview.setText(ParameterNumericalNames.get(0));
-            seekBar.setMax((seekBarMax - seekBarMin) / step);
+            final TextView seekbarvalue = seekbarvalues.get(currentFilterCount);
+            final int seekBarMin = ParameterNumericalRange.get(i).get(0);
+            final int seekBarMax = ParameterNumericalRange.get(i).get(1);
 
-            SeekBarValueMap.put(ParameterNumericalNames.get(0), seekBarValue);
+            filternames.get(currentFilterCount).setText(ParameterNumericalNames.get(i));
 
-            seekBar.setOnSeekBarChangeListener(
+            seekbars.get(currentFilterCount).setMax((seekBarMax - seekBarMin) / step);
+
+            SeekBarValueMap.put(ParameterNumericalNames.get(i), seekbarvalue);
+
+            seekbars.get(currentFilterCount).setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
@@ -197,15 +202,23 @@ public class filterEquipmentActivity extends BaseActivity {
                                                       boolean fromUser) {
 
                             double value = seekBarMin + (progress * step);
-                            seekBarValue.setText(String.valueOf((int) value));
+                            seekbarvalue.setText(String.valueOf((int) value));
                         }
                     }
             );
+            spinners.get(currentFilterCount).setVisibility(View.INVISIBLE);
+
+            currentFilterCount += 1;
+
+        }
 
 
-        } else {
-            filter3Textview.setVisibility(View.INVISIBLE);
-            seekBar.setVisibility(View.INVISIBLE);
+        if (currentFilterCount < 3){
+            for(int i=currentFilterCount;i<3;i++) {
+                spinners.get(i).setVisibility(View.INVISIBLE);
+                filternames.get(i).setVisibility(View.INVISIBLE);
+                seekbars.get(i).setVisibility(View.INVISIBLE);
+            }
         }
 
 
@@ -279,7 +292,7 @@ public class filterEquipmentActivity extends BaseActivity {
                 // TODO send result to show showFilterResultActivity
 //                Intent i = new Intent(filterEquipmentActivity.this, showFilterResultActivity.class);
 //                //i.putExtra("searchResult", searchResult);
-//                startActivity(i);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+//                startActivity(i);
             }
         });
 
