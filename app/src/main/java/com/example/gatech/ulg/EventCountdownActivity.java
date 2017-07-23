@@ -1,5 +1,6 @@
 package com.example.gatech.ulg;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -44,10 +45,6 @@ public class EventCountdownActivity extends BaseActivity {
         getLayoutInflater().inflate(R.layout.activity_event_coundown, contentFrameLayout);
 
 
-//        setContentView(R.layout.activity_event_coundown);
-
-
-
         if (duration > 0) {
             // assigning values after converting to milliseconds
             timeCountInMilliSeconds = duration * 60 * 1000;
@@ -77,6 +74,10 @@ public class EventCountdownActivity extends BaseActivity {
                 timerStatus = TimerStatus.STOPPED;
                 stopCountDownTimer();
                 Toast.makeText(EventCountdownActivity.this, "Event completed, please provide some feedback.", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(), EvaluateManagerActivity.class);
+                startActivity(i);
+                finish();
+
             }
         });
 
@@ -150,6 +151,10 @@ public class EventCountdownActivity extends BaseActivity {
                 // changing the timer status to stopped
                 timerStatus = TimerStatus.STOPPED;
                 imageViewStartStop.setVisibility(View.INVISIBLE);
+
+                Intent i = new Intent(getApplicationContext(), EvaluateManagerActivity.class);
+                startActivity(i);
+                finish();
             }
 
         };

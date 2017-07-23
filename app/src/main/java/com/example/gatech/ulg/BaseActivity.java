@@ -44,7 +44,7 @@ public class BaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.outgroup:
-                        Intent intent_outcategor = new Intent(getApplicationContext(), showEquipmentCategory.class);
+                        Intent intent_outcategor = new Intent(getApplicationContext(), showEquipAvailableScheduleActivity.class);
                         startActivity(intent_outcategor);
                         drawerLayout.closeDrawers();
                         break;

@@ -1,6 +1,5 @@
 package com.example.gatech.ulg;
 
-import android.content.Intent;
 import android.graphics.RectF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,14 +20,16 @@ import java.util.Calendar;
 import java.util.Locale;
 import me.tittojose.www.timerangepicker_library.TimeRangePickerDialog;
 
+import me.tittojose.www.timerangepicker_library.TimeRangePickerDialog;
 
-public abstract class CalenderBaseActivity extends BaseActivity implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener, TimeRangePickerDialog.OnTimeRangeSelectedListener  {
+public abstract class reserveCalenderBaseActivity extends BaseActivity implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener, TimeRangePickerDialog.OnTimeRangeSelectedListener {
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
+    private WeekViewEvent CurrentClickedEvent;
 
     public static final String TIMERANGEPICKER_TAG = "timerangepicker";
     private String TAG = CalenderBaseActivity.class.getSimpleName();
@@ -39,7 +40,7 @@ public abstract class CalenderBaseActivity extends BaseActivity implements WeekV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame); //Remember this is the FrameLayout area within your activity_main.xml
-        getLayoutInflater().inflate(R.layout.activity_calender_base, contentFrameLayout);
+        getLayoutInflater().inflate(R.layout.activity_reserve_calender_base, contentFrameLayout);
 
 //        setContentView(R.layout.activity_calender_base);
 
@@ -165,11 +166,12 @@ public abstract class CalenderBaseActivity extends BaseActivity implements WeekV
 
     @Override
     public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
-        Toast.makeText(this, "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT).show();
-
-        Intent i = new Intent( getApplicationContext() , EventCountdownActivity.class);
-        startActivity(i);
-
+//        Toast.makeText(this, "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Clicked " + event.getName(), Toast.LENGTH_SHORT).show();
+        // Start event
+        final TimeRangePickerDialog timePickerDialog = TimeRangePickerDialog.newInstance(reserveCalenderBaseActivity.this, false);
+        timePickerDialog.show(this.getSupportFragmentManager(), TIMERANGEPICKER_TAG);
+        CurrentClickedEvent = event;
 
 
     }
@@ -183,6 +185,42 @@ public abstract class CalenderBaseActivity extends BaseActivity implements WeekV
         return mWeekView;
     }
 
+    @Override
+    public void onTimeRangeSelected(int startHour, int startMin, int endHour, int endMin) {
 
+        int EventStartHour = CurrentClickedEvent.getStartTime().get(Calendar.HOUR_OF_DAY);
+        int EventStartMinute = CurrentClickedEvent.getStartTime().get(Calendar.MINUTE);
+
+        int EventEndHour = CurrentClickedEvent.getEndTime().get(Calendar.HOUR_OF_DAY);
+        int EventEndMinute = CurrentClickedEvent.getEndTime().get(Calendar.MINUTE);
+
+        int EventStart = EventStartHour * 60 + EventStartMinute;
+        int EventEnd = EventEndHour * 60  + EventEndHour;
+
+        int SelcetedStart = startHour * 60 + startMin;
+        int SelectedEnd = endHour * 60 + endMin;
+
+
+        if (SelcetedStart < EventStart || SelcetedStart > EventEnd || SelectedEnd < EventStart || SelectedEnd > EventEnd ){
+
+            Toast.makeText(this, "Please re-select time range within the range.", Toast.LENGTH_SHORT).show();
+
+        }else{
+
+            // TODO: Reverved + POST
+            Toast.makeText(this, "Successfully reserve an equipment!!", Toast.LENGTH_SHORT).show();
+
+        }
+
+//        // Debug: print the event time and Clicked time
+//        String startTime = startHour + " : " + startMin;
+//        String endTime = endHour + " : " + endMin;
+//
+//        String EventstartTime = EventStartHour + " : " + EventStartMinute;
+//        String EventendTime = EventEndHour + " : " + EventEndMinute;
+//
+//        Log.d(TAG, "Event Time:"  + EventstartTime + "\n" + EventendTime);
+//        Log.d(TAG, "You Clicked" + startTime + "\n" + endTime);
+    }
 
 }

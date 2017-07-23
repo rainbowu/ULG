@@ -52,6 +52,8 @@ public class EvaluateManagerActivity extends BaseActivity {
             public void onClick(View view) {
                 Toast.makeText(EvaluateManagerActivity.this, "Rating submitted successfully!", Toast.LENGTH_SHORT).show();
 
+                finish();
+
             }
         });
     }

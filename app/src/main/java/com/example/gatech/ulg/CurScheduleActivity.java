@@ -117,4 +117,8 @@ public class CurScheduleActivity extends CalenderBaseActivity {
         return events;
     }
 
+    @Override
+    public void onTimeRangeSelected(int startHour, int startMin, int endHour, int endMin) {
+
+    }
 }

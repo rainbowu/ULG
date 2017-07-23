@@ -31,7 +31,9 @@
         <activity android:name=".CurScheduleActivity" />
         <activity android:name=".BaseActivity" />
         <activity android:name=".EventCountdownActivity" />
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".reserveCalenderBaseActivity" />
+        <activity android:name=".showEquipAvailableScheduleActivity"></activity>
     </application>
 
 </manifest>
