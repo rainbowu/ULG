@@ -28,7 +28,10 @@ import me.tittojose.www.timerangepicker_library.TimeRangePickerDialog;
 public abstract class reserveCalenderBaseActivity extends BaseActivity implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener, TimeRangePickerDialog.OnTimeRangeSelectedListener {
 
 
-    private String POST_RESERVEEVENT_API = "https://unitedlab-171401.appspot.com/EventUpdate/";
+    private static final String POST_RESERVEEVENT_API = "https://unitedlab-171401.appspot.com/EventUpdate/";
+    private static final String ACCOUNT_INFO_API = "https://unitedlab-171401.appspot.com/AccountInfo/";
+
+
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -39,6 +42,7 @@ public abstract class reserveCalenderBaseActivity extends BaseActivity implement
 
     public static final String TIMERANGEPICKER_TAG = "timerangepicker";
     private String TAG = CalenderBaseActivity.class.getSimpleName();
+    private String curUserName;
 
 
 
@@ -70,6 +74,9 @@ public abstract class reserveCalenderBaseActivity extends BaseActivity implement
         // Set up a date time interpreter to interpret how the date and time will be formatted in
         // the week view. This is optional.
         setupDateTimeInterpreter(false);
+
+        GetUserINnfo getUserINnfoAsyncTask = new GetUserINnfo(ACCOUNT_INFO_API);
+        getUserINnfoAsyncTask.execute(ACCOUNT_INFO_API);
 
     }
 
@@ -228,18 +235,27 @@ public abstract class reserveCalenderBaseActivity extends BaseActivity implement
 
             // TODO: Reverved + POST
 
+            JSON curEventJSON = new JSON(CurrentClickedEvent.getLocation());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+
+            String equip_id = curEventJSON.key("equipID").toString();
+            String manager_username = curEventJSON.key("manager").toString();
+            String start_time = formatter.format(CurrentClickedEvent.getStartTime().getTime());
+            String end_time = formatter.format(CurrentClickedEvent.getEndTime().getTime());
+
 
             JSON reverveEvent = JSON.create(
                     JSON.dic(
                             "method", "new",
                             "event", JSON.dic(
-                                    "title", "test",
+                                    "title", "testtesttesttesttesttesttesttesttest",
                                     "eventType", "reserve",
-                                    "manager", "student2",
-                                    "user", "student1",
-                                    "start_time", "2017-07-23 11:00:00",
-                                    "end_time", "2017-07-23 12:00:00",
-                                    "equipID", "3",
+                                    "manager", manager_username,
+                                    "user", curUserName,
+                                    "start_time", start_time,
+                                    "end_time", end_time,
+                                    "equipID", equip_id,
                                     "disable", "false"
                             )
                     )
@@ -294,5 +310,38 @@ public abstract class reserveCalenderBaseActivity extends BaseActivity implement
         }
     }
 
+
+    private class GetUserINnfo extends AsyncTask<String, Void, String> {
+
+        private String url;
+        private HttpHandler httpHandler;
+
+        public GetUserINnfo(String url) {
+            this.url = url;
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            httpHandler = new HttpHandler();
+            String jsonStr = httpHandler.makeGETServiceCall(ACCOUNT_INFO_API);
+            return jsonStr;
+
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+
+            if (result != null){
+
+                JSON res = new JSON(result);
+                res = res.key("data");
+                curUserName = res.key("username").toString();
+
+            }
+
+        }
+    }
 
 }

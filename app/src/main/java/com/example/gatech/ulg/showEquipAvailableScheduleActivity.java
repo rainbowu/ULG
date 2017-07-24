@@ -35,6 +35,8 @@ public class showEquipAvailableScheduleActivity extends reserveCalenderBaseActiv
         Bundle bundle = getIntent().getExtras();
         String equipmentJSONstr = bundle.getString("events");
 
+
+
         Log.d("1111111111111111",equipmentJSONstr );
 
         JSON equipmentJSON = new JSON(equipmentJSONstr);
@@ -60,7 +62,9 @@ public class showEquipAvailableScheduleActivity extends reserveCalenderBaseActiv
             }
 
             WeekViewEvent weekevent = new WeekViewEvent(1, name, starttime, endtime);
-            weekevent.setLocation(location);
+
+            // Workaround: Use the location field to pass the Sting.
+            weekevent.setLocation(event.toString());
             if (eventType.equals("share"))
                 weekevent.setColor(getResources().getColor(R.color.event_color_01));
             else
@@ -68,6 +72,7 @@ public class showEquipAvailableScheduleActivity extends reserveCalenderBaseActiv
 
             _event.add(weekevent);
         }
+
 
 
 

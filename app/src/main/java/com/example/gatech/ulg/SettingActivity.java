@@ -57,10 +57,6 @@ public class SettingActivity extends BaseActivity {
 
         private String url;
         private HttpHandler httpHandler;
-        private String name;
-        private String username;
-        private String email;
-
 
         public HttpAsyncTask(String url) {
             this.url = url;
