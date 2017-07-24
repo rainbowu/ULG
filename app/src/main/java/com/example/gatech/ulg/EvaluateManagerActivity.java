@@ -149,13 +149,15 @@ public class EvaluateManagerActivity extends BaseActivity {
         protected void onPostExecute(String result) {
 
 
-
                 if (result != null){
+                    Log.d(TAG, result);
 
                     Toast.makeText(EvaluateManagerActivity.this, "Rating submitted successfully!", Toast.LENGTH_SHORT).show();
                     finish();
 
                 }else {
+                    Log.d(TAG, result);
+
                     Toast.makeText(EvaluateManagerActivity.this, "Try again latter.", Toast.LENGTH_SHORT).show();
                 }
 

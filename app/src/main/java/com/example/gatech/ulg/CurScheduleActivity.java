@@ -25,7 +25,7 @@ public class CurScheduleActivity extends CalenderBaseActivity {
     private static final String GET_SCHEDULE_API = "https://unitedlab-171401.appspot.com/Eventlist/";
     private Map<String, WeekViewEvent> eventmap = new HashMap<String, WeekViewEvent>();
 
-    private ArrayList _event = new ArrayList<WeekViewEvent>();
+    private ArrayList<WeekViewEvent> _event = new ArrayList<WeekViewEvent>();
 
 
     @Override
@@ -41,8 +41,15 @@ public class CurScheduleActivity extends CalenderBaseActivity {
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
 
+        ArrayList<WeekViewEvent> eventsMonth = new ArrayList<WeekViewEvent>();
+        for (int i = 0; i < _event.size(); i++) {
+            if (_event.get(i).getStartTime().get(Calendar.MONTH) == newMonth) {
+                eventsMonth.add(_event.get(i));
+            }
+        }
 
-        return _event;
+        return eventsMonth;
+
     }
 
     @Override
@@ -107,7 +114,6 @@ public class CurScheduleActivity extends CalenderBaseActivity {
                 else
                     weekevent.setColor(getResources().getColor(R.color.event_color_02));
                 weekevent.setId(id);
-
                 eventmap.put(name, weekevent);
                 _event.add(weekevent);
             }

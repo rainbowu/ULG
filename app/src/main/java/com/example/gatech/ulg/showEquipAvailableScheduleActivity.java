@@ -25,7 +25,7 @@ import eu.amirs.JSON;
 
 public class showEquipAvailableScheduleActivity extends reserveCalenderBaseActivity {
 
-    private ArrayList _event = new ArrayList<WeekViewEvent>();
+    private ArrayList<WeekViewEvent> _event = new ArrayList<WeekViewEvent>();
 
 
     @Override
@@ -34,10 +34,6 @@ public class showEquipAvailableScheduleActivity extends reserveCalenderBaseActiv
 
         Bundle bundle = getIntent().getExtras();
         String equipmentJSONstr = bundle.getString("events");
-
-
-
-        Log.d("1111111111111111",equipmentJSONstr );
 
         JSON equipmentJSON = new JSON(equipmentJSONstr);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
@@ -82,21 +78,13 @@ public class showEquipAvailableScheduleActivity extends reserveCalenderBaseActiv
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
         // Populate the week view with some events.
-        List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
+        ArrayList<WeekViewEvent> eventsMonth = new ArrayList<WeekViewEvent>();
+        for (int i = 0; i < _event.size(); i++) {
+            if (_event.get(i).getStartTime().get(Calendar.MONTH) == newMonth) {
+                eventsMonth.add(_event.get(i));
+            }
+        }
 
-        Calendar startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, 3);
-        startTime.set(Calendar.MINUTE, 0);
-        startTime.set(Calendar.MONTH, newMonth - 1);
-        startTime.set(Calendar.YEAR, newYear);
-        Calendar endTime = (Calendar) startTime.clone();
-        endTime.add(Calendar.HOUR, 1);
-        endTime.set(Calendar.MONTH, newMonth - 1);
-        WeekViewEvent event = new WeekViewEvent(1, "Evaporator\n", startTime, endTime);
-        event.setLocation("ES&T");
-        event.setColor(getResources().getColor(R.color.event_color_01));
-        events.add(event);
-
-        return _event;
+        return eventsMonth;
     }
 }
