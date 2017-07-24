@@ -1,6 +1,7 @@
 package com.example.gatech.ulg;
 
 import android.graphics.RectF;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,11 +19,16 @@ import com.alamkanak.weekview.WeekViewEvent;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import eu.amirs.JSON;
 import me.tittojose.www.timerangepicker_library.TimeRangePickerDialog;
 
 import me.tittojose.www.timerangepicker_library.TimeRangePickerDialog;
 
 public abstract class reserveCalenderBaseActivity extends BaseActivity implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener, TimeRangePickerDialog.OnTimeRangeSelectedListener {
+
+
+    private String POST_RESERVEEVENT_API = "https://unitedlab-171401.appspot.com/EventUpdate/";
 
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
@@ -200,27 +206,93 @@ public abstract class reserveCalenderBaseActivity extends BaseActivity implement
         int SelcetedStart = startHour * 60 + startMin;
         int SelectedEnd = endHour * 60 + endMin;
 
+        String eventTimeRange = Integer.toString(EventStartHour) + ":" + Integer.toString(EventStartMinute)
+                + "~" + Integer.toString(EventEndHour) + ":" + Integer.toString(EventEndMinute);
+
+        // Debug: print the event time and Clicked time
+        String startTime = startHour + " : " + startMin;
+        String endTime = endHour + " : " + endMin;
+
+        String EventstartTime = EventStartHour + " : " + EventStartMinute;
+        String EventendTime = EventEndHour + " : " + EventEndMinute;
+
+        Log.d(TAG, "Event Time:"  + EventstartTime + "\n" + EventendTime);
+        Log.d(TAG, "You Clicked" + startTime + "\n" + endTime);
+
 
         if (SelcetedStart < EventStart || SelcetedStart > EventEnd || SelectedEnd < EventStart || SelectedEnd > EventEnd ){
 
-            Toast.makeText(this, "Please re-select time range within the range.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please re-select time range within " + eventTimeRange, Toast.LENGTH_SHORT).show();
 
         }else{
 
             // TODO: Reverved + POST
-            Toast.makeText(this, "Successfully reserve an equipment!!", Toast.LENGTH_SHORT).show();
+
+
+            JSON reverveEvent = JSON.create(
+                    JSON.dic(
+                            "method", "new",
+                            "event", JSON.dic(
+                                    "title", "test",
+                                    "eventType", "reserve",
+                                    "manager", "student2",
+                                    "user", "student1",
+                                    "start_time", "2017-07-23 11:00:00",
+                                    "end_time", "2017-07-23 12:00:00",
+                                    "equipID", "3",
+                                    "disable", "false"
+                            )
+                    )
+            );
+
+            HttpAsyncTask signup_login = new HttpAsyncTask(POST_RESERVEEVENT_API, reverveEvent.toString());
+            signup_login.execute(POST_RESERVEEVENT_API);
+
 
         }
 
-//        // Debug: print the event time and Clicked time
-//        String startTime = startHour + " : " + startMin;
-//        String endTime = endHour + " : " + endMin;
-//
-//        String EventstartTime = EventStartHour + " : " + EventStartMinute;
-//        String EventendTime = EventEndHour + " : " + EventEndMinute;
-//
-//        Log.d(TAG, "Event Time:"  + EventstartTime + "\n" + EventendTime);
-//        Log.d(TAG, "You Clicked" + startTime + "\n" + endTime);
+
     }
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+
+        private String url, postStr;
+        private HttpHandler httpHandler;
+
+        public HttpAsyncTask(String url, String postStr) {
+            this.url = url;
+            this.postStr = postStr;
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            JSON data = new JSON(postStr);
+
+            httpHandler = new HttpHandler();
+            String jsonStr = httpHandler.makePOSTServiceCall(url, data);
+
+            Log.d(TAG, postStr);
+
+            return jsonStr;
+
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+
+            JSON resultJSON = new JSON(result);
+
+            if (result == null || resultJSON.key("status").equals("Error")){
+                Toast.makeText(getApplicationContext(), "Cannot reserve the event, please try again.", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, result);
+            }else {
+                Toast.makeText(getApplicationContext(), "Successfully reserve an equipment!!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, result);
+            }
+
+        }
+    }
+
 
 }

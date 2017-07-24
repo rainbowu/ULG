@@ -139,7 +139,7 @@ public class EvaluateManagerActivity extends BaseActivity {
             Log.d(TAG, postStr);
 
             String jsonStr = httpHandler.makePOSTServiceCall(url, temp);
-            
+
             return jsonStr;
 
         }
