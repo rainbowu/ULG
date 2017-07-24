@@ -35,6 +35,8 @@ public class EventCountdownActivity extends BaseActivity {
     private ImageView imageViewStartStop;
     private CountDownTimer countDownTimer;
     private Button button;
+    private int equipid = 0;
+
 
 
     @Override
@@ -43,6 +45,11 @@ public class EventCountdownActivity extends BaseActivity {
 
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame); //Remember this is the FrameLayout area within your activity_main.xml
         getLayoutInflater().inflate(R.layout.activity_event_coundown, contentFrameLayout);
+
+        Bundle bundle = getIntent().getExtras();
+        int []id_duration = bundle.getIntArray("id_duration");
+        equipid = id_duration[0];
+        duration = id_duration[1];
 
 
         if (duration > 0) {
@@ -75,6 +82,7 @@ public class EventCountdownActivity extends BaseActivity {
                 stopCountDownTimer();
                 Toast.makeText(EventCountdownActivity.this, "Event completed, please provide some feedback.", Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(), EvaluateManagerActivity.class);
+                i.putExtra("equipid", equipid);
                 startActivity(i);
                 finish();
 
@@ -153,6 +161,7 @@ public class EventCountdownActivity extends BaseActivity {
                 imageViewStartStop.setVisibility(View.INVISIBLE);
 
                 Intent i = new Intent(getApplicationContext(), EvaluateManagerActivity.class);
+                i.putExtra("equipid", equipid);
                 startActivity(i);
                 finish();
             }

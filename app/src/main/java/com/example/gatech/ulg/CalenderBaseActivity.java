@@ -29,6 +29,8 @@ public abstract class CalenderBaseActivity extends BaseActivity implements WeekV
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
+    private WeekViewEvent CurrentClickedEvent;
+
 
     public static final String TIMERANGEPICKER_TAG = "timerangepicker";
     private String TAG = CalenderBaseActivity.class.getSimpleName();
@@ -166,8 +168,26 @@ public abstract class CalenderBaseActivity extends BaseActivity implements WeekV
     @Override
     public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
         Toast.makeText(this, "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT).show();
+        CurrentClickedEvent = event;
+
+
+
+        int EventStartHour = CurrentClickedEvent.getStartTime().get(Calendar.HOUR_OF_DAY);
+        int EventStartMinute = CurrentClickedEvent.getStartTime().get(Calendar.MINUTE);
+
+        int EventEndHour = CurrentClickedEvent.getEndTime().get(Calendar.HOUR_OF_DAY);
+        int EventEndMinute = CurrentClickedEvent.getEndTime().get(Calendar.MINUTE);
+
+        int EventStart = EventStartHour * 60 + EventStartMinute;
+        int EventEnd = EventEndHour * 60  + EventEndHour;
+
+        int duration = EventEnd - EventStart;
+
 
         Intent i = new Intent( getApplicationContext() , EventCountdownActivity.class);
+        int id_duration[] = {(int)event.getId(), duration};
+
+        i.putExtra("id_duration", id_duration);
         startActivity(i);
 
 

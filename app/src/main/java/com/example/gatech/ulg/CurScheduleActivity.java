@@ -86,7 +86,7 @@ public class CurScheduleActivity extends CalenderBaseActivity {
 
                 JSON event = temp.key("Eventlist").index(i);
 
-                String id = event.key("id").toString();
+                long id = event.key("id").longValue();
                 String name = event.key("equip").toString();
                 String location = event.key("location").toString();
                 String eventType = event.key("eventType").toString();
@@ -106,6 +106,7 @@ public class CurScheduleActivity extends CalenderBaseActivity {
                     weekevent.setColor(getResources().getColor(R.color.event_color_01));
                 else
                     weekevent.setColor(getResources().getColor(R.color.event_color_02));
+                weekevent.setId(id);
 
                 eventmap.put(name, weekevent);
                 _event.add(weekevent);

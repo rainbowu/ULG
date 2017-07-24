@@ -36,6 +36,7 @@ public class EvaluateManagerActivity extends BaseActivity {
     private int equipmentRate = 5;
     private int managerRate = 5;
     private TextView reviewText;
+    private int equipid = 0;
 
 
 
@@ -45,6 +46,10 @@ public class EvaluateManagerActivity extends BaseActivity {
 
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame); //Remember this is the FrameLayout area within your activity_main.xml
         getLayoutInflater().inflate(R.layout.activity_evaluate_manager, contentFrameLayout);
+
+        Bundle bundle = getIntent().getExtras();
+        equipid = bundle.getInt("equipid");
+
 
         managerRatingBar = (RatingBar)findViewById(R.id.managerRatingBar);
         equipmentRatingBar = (RatingBar)findViewById(R.id.equipmentRatingBar);
@@ -67,15 +72,17 @@ public class EvaluateManagerActivity extends BaseActivity {
 
                 JSON test = JSON.create(
                         JSON.dic(
-                                "equip_rate", Integer.toString(equipmentRate),
+                                "eventid", Integer.toString(equipid),
                                 "manager_rate", Integer.toString(managerRate),
-                                "manager_note", reviewText.getText().toString()
+                                "manager_note", reviewText.getText().toString(),
+                                "equip_rate", Integer.toString(equipmentRate)
                                 )
                 );
 
 
-                HttpAsyncTask httpAsyncTask = new HttpAsyncTask(POST_EVALUATION_API);
-                httpAsyncTask.execute(POST_EVALUATION_API), test.toString());
+                HttpAsyncTask httpAsyncTask = new HttpAsyncTask(POST_EVALUATION_API, test.toString());
+                httpAsyncTask.execute(POST_EVALUATION_API);
+
 
 
             }
@@ -128,8 +135,11 @@ public class EvaluateManagerActivity extends BaseActivity {
             JSON temp = new JSON(postStr);
 
             httpHandler = new HttpHandler();
-            String jsonStr = httpHandler.makePOSTServiceCall(url, temp);
 
+            Log.d(TAG, postStr);
+
+            String jsonStr = httpHandler.makePOSTServiceCall(url, temp);
+            
             return jsonStr;
 
         }
@@ -138,13 +148,16 @@ public class EvaluateManagerActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String result) {
 
-                if (!result.equals("")){
+
+
+                if (result != null){
 
                     Toast.makeText(EvaluateManagerActivity.this, "Rating submitted successfully!", Toast.LENGTH_SHORT).show();
                     finish();
 
-                }else
+                }else {
                     Toast.makeText(EvaluateManagerActivity.this, "Try again latter.", Toast.LENGTH_SHORT).show();
+                }
 
         }
 
