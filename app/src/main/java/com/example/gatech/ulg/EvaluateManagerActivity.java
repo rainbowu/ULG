@@ -1,6 +1,7 @@
 package com.example.gatech.ulg;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,10 +13,21 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alamkanak.weekview.WeekViewEvent;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+import eu.amirs.JSON;
+
 public class EvaluateManagerActivity extends BaseActivity {
 
     private String TAG = EvaluateManagerActivity.class.getSimpleName();
-
+    private static final String POST_EVALUATION_API = "https://unitedlab-171401.appspot.com/EventRate/";
 
 
     private Button submitReview;
@@ -23,6 +35,7 @@ public class EvaluateManagerActivity extends BaseActivity {
     private RatingBar equipmentRatingBar;
     private int equipmentRate = 5;
     private int managerRate = 5;
+    private TextView reviewText;
 
 
 
@@ -36,7 +49,7 @@ public class EvaluateManagerActivity extends BaseActivity {
         managerRatingBar = (RatingBar)findViewById(R.id.managerRatingBar);
         equipmentRatingBar = (RatingBar)findViewById(R.id.equipmentRatingBar);
         submitReview = (Button)findViewById(R.id.submitReview);
-
+        reviewText = (TextView)findViewById(R.id.reviewText);
 
         setButtonListener();
         setEquipmentRatingListener();
@@ -50,9 +63,20 @@ public class EvaluateManagerActivity extends BaseActivity {
         submitReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(EvaluateManagerActivity.this, "Rating submitted successfully!", Toast.LENGTH_SHORT).show();
 
-                finish();
+
+                JSON test = JSON.create(
+                        JSON.dic(
+                                "equip_rate", Integer.toString(equipmentRate),
+                                "manager_rate", Integer.toString(managerRate),
+                                "manager_note", reviewText.getText().toString()
+                                )
+                );
+
+
+                HttpAsyncTask httpAsyncTask = new HttpAsyncTask(POST_EVALUATION_API);
+                httpAsyncTask.execute(POST_EVALUATION_API), test.toString());
+
 
             }
         });
@@ -83,4 +107,47 @@ public class EvaluateManagerActivity extends BaseActivity {
 
 
     }
+
+
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+
+        private String url;
+        private HttpHandler httpHandler;
+        private String postStr = "";
+
+
+        public HttpAsyncTask(String url, String JSON) {
+
+            this.url = url;
+            this.postStr = JSON;
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            JSON temp = new JSON(postStr);
+
+            httpHandler = new HttpHandler();
+            String jsonStr = httpHandler.makePOSTServiceCall(url, temp);
+
+            return jsonStr;
+
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+
+                if (!result.equals("")){
+
+                    Toast.makeText(EvaluateManagerActivity.this, "Rating submitted successfully!", Toast.LENGTH_SHORT).show();
+                    finish();
+
+                }else
+                    Toast.makeText(EvaluateManagerActivity.this, "Try again latter.", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
 }
