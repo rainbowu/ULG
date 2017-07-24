@@ -1,5 +1,6 @@
 package com.example.gatech.ulg;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -288,11 +289,6 @@ public class filterEquipmentActivity extends BaseActivity {
                 HttpAsyncTask httpAsyncTask = new HttpAsyncTask(POST_EQUIPSEARCH_API, generatedJsonObject.toString());
                 httpAsyncTask.execute(POST_EQUIPSEARCH_API);
 
-
-                // TODO send result to show showFilterResultActivity
-//                Intent i = new Intent(filterEquipmentActivity.this, showFilterResultActivity.class);
-//                //i.putExtra("searchResult", searchResult);
-//                startActivity(i);
             }
         });
 
@@ -338,8 +334,9 @@ public class filterEquipmentActivity extends BaseActivity {
             if (resultjson.key("equipList").count() == 0){
                 Toast.makeText(getApplicationContext(), "Sorry, No matching results. Please change filters", Toast.LENGTH_LONG).show();
             }else {
-
-                Log.d(TAG, result);
+                Intent i = new Intent(filterEquipmentActivity.this, showFilterResultActivity.class);
+                i.putExtra("searchResult", result);
+                startActivity(i);
             }
 
         }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -15,18 +16,15 @@ import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import eu.amirs.JSON;
 
 public class SettingActivity extends BaseActivity {
 
     private static final String ACCOUNT_INFO_API = "https://unitedlab-171401.appspot.com/AccountInfo/";
     private String TAG = SettingActivity.class.getSimpleName();
 
-
-    @Bind(R.id.input_name) EditText _nameText;
-    @Bind(R.id.input_username) EditText _username;
-    @Bind(R.id.input_email) EditText _emailText;
-    @Bind(R.id.btn_update) Button _updateButton;
-
+    private TextView _nameText, _usernameText, _emailText;
+    private Button _updateButton;
 
 
     @Override
@@ -36,7 +34,10 @@ public class SettingActivity extends BaseActivity {
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.content_frame); //Remember this is the FrameLayout area within your activity_main.xml
         getLayoutInflater().inflate(R.layout.activity_setting, contentFrameLayout);
 
-        ButterKnife.bind(this);
+        _nameText = (TextView) findViewById(R.id.name);
+        _usernameText = (TextView) findViewById(R.id.username);
+        _emailText = (TextView) findViewById(R.id.email);
+        _updateButton = (Button) findViewById(R.id.btn_update);
 
         HttpAsyncTask httpAsyncTask = new HttpAsyncTask(ACCOUNT_INFO_API);
         httpAsyncTask.execute(ACCOUNT_INFO_API);
@@ -49,7 +50,6 @@ public class SettingActivity extends BaseActivity {
 
             }
         });
-
 
     }
 
@@ -81,22 +81,15 @@ public class SettingActivity extends BaseActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
 
-            if (result != null){
-                try {
-                    JSONObject jsonObj = new JSONObject(result);
-                    _nameText.setText(jsonObj.getString("userType"));
-                    _emailText.setText(jsonObj.getString("email"));
-                    _username.setText(jsonObj.getString("username"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            JSON res = new JSON(result);
+            res = res.key("data");
+            Log.d(TAG, res.key("firstName").toString() + " " + res.key("lastName").toString());
+            Log.d(TAG, res.key("email").toString());
 
-
-            }else {
-                Toast.makeText(getApplicationContext(), "Please check network connection.", Toast.LENGTH_LONG).show();
-            }
+            _nameText.setText(res.key("firstName").toString() + " " + res.key("lastName").toString());
+            _emailText.setText(res.key("email").toString());
+            _usernameText.setText(res.key("username").toString());
 
         }
     }

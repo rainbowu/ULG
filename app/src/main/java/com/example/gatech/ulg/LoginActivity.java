@@ -27,13 +27,10 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
     private boolean LoginResult = false;
 
-
     @Bind(R.id.input_email) EditText _emailText;
     @Bind(R.id.input_password) EditText _passwordText;
     @Bind(R.id.btn_login) Button _loginButton;
     @Bind(R.id.link_signup) TextView _signupLink;
-
-
 
 
     @Override
@@ -43,8 +40,8 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        _emailText.setText("kkk@gmail.com");
-        _passwordText.setText("kkk");
+        _emailText.setText("Bob@gatech.edu");
+        _passwordText.setText("student");
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
