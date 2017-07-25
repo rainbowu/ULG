@@ -241,15 +241,26 @@ public abstract class reserveCalenderBaseActivity extends BaseActivity implement
 
             String equip_id = curEventJSON.key("equipID").toString();
             String manager_username = curEventJSON.key("manager").toString();
-            String start_time = formatter.format(CurrentClickedEvent.getStartTime().getTime());
-            String end_time = formatter.format(CurrentClickedEvent.getEndTime().getTime());
+            String title = curUserName + " reserve " + curEventJSON.key("equip").toString();
 
+
+            Calendar clicked_start =  CurrentClickedEvent.getStartTime();
+            Calendar clicked_end =  CurrentClickedEvent.getEndTime();
+
+            clicked_start.set(Calendar.HOUR_OF_DAY, startHour);
+            clicked_start.set(Calendar.MINUTE, startMin);
+
+            clicked_end.set(Calendar.HOUR_OF_DAY, endHour);
+            clicked_end.set(Calendar.MINUTE, endMin);
+
+            String start_time = formatter.format(clicked_start.getTime());
+            String end_time = formatter.format(clicked_end.getTime());
 
             JSON reverveEvent = JSON.create(
                     JSON.dic(
                             "method", "new",
                             "event", JSON.dic(
-                                    "title", "testtesttesttesttesttesttesttesttest",
+                                    "title", title,
                                     "eventType", "reserve",
                                     "manager", manager_username,
                                     "user", curUserName,

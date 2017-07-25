@@ -39,6 +39,8 @@ public class showEquipAvailableScheduleActivity extends reserveCalenderBaseActiv
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
 
+
+
         for(int i=0; i<equipmentJSON.count(); i++){
 
             JSON event = equipmentJSON.index(i);

@@ -40,8 +40,8 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        _emailText.setText("Bob@gatech.edu");
-        _passwordText.setText("student");
+        _emailText.setText("@gatech.edu");
+//        _passwordText.setText("student");
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
